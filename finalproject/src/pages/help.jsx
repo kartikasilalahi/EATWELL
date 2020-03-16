@@ -5,11 +5,6 @@ import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 
 
 class Help extends Component {
-    state = {
-        show1: false,
-        show2: false,
-        Show3: false
-    }
     render() {
         return (
             <div>
@@ -34,6 +29,9 @@ class Help extends Component {
                             </Tab>
                             <Tab tabFor="vertical-tab-three">
                                 <p>Do I need to print vouchers?</p>
+                            </Tab>
+                            <Tab tabFor="vertical-tab-four">
+                                <p>Others</p>
                             </Tab>
                         </TabList>
                         <TabPanel style={{ width: "100%" }} tabId="vertical-tab-one">
@@ -63,12 +61,18 @@ class Help extends Component {
                                 No, the voucher is enough to be displayed from your gadget / cellphone
                             </div>
                         </TabPanel>
+                        <TabPanel style={{ width: "100%" }} tabId="vertical-tab-four">
+                            <div className="mx-3 px-4 py-3">
+                                <h6>Join with Us</h6>
+                                Register Your Business with Eatwell, An Effective Media To Promote Your Business, to increase sales and get new customers. For more details, click <a style={{ textDecoration: 'none', color: 'green', fontWeight: 'bold' }} href='/join'>here</a>
+                            </div>
+                        </TabPanel>
 
                     </Tabs>
                 </div>
 
                 <Footer />
-            </div>
+            </div >
         );
     }
 }

@@ -19,7 +19,8 @@ function Akunuser() {
         }
     })
 
-    if (State.id !== 1) {
+    let id = localStorage.getItem('id')
+    if (!id) {
         return <Redirect to='/notfound' />
     }
 

@@ -88,6 +88,11 @@ class Header extends Component {
         this.props.Open_Login(true)
     }
 
+    togglelogin = () => {
+        this.props.Open_Login(false)
+        this.props.ERROR_LOGIN('')
+    }
+
     // BUTTON LOGIN
     // ============
     btnLogin = () => {
@@ -155,12 +160,11 @@ class Header extends Component {
         } else if (roleid === 3) {
             return <Redirect to='/admin' />
         }
-
         return (
             <div>
                 {/* ===== start modal =====*/}
                 {/* modal login */}
-                <Modal className="modallogin" style={{ borderRadius: "100px" }} centered isOpen={this.props.modallogin} toggle={() => this.props.Open_Login(false)}>
+                <Modal className="modallogin" style={{ borderRadius: "100px" }} centered isOpen={this.props.modallogin} toggle={this.togglelogin}>
                     <ModalBody className="d-flex">
                         <div className="gbr_login" style={{ width: "45%", height: "auto" }}>
                             <Carousel infiniteLoop showArrows={false} showThumbs={false} showStatus={false} showIndicators={false} autoPlay>
@@ -278,12 +282,6 @@ class Header extends Component {
                                     <nav>
                                         <ul>
                                             <li><a onClick={this.logoutClick} >Logout</a></li>
-                                            {/* <li><a href="/akun">
-                                                <button className="btnakun btn-outline-light px-4 "
-                                                    style={{ borderRadius: "25px", cursor: "pointer" }}>
-                                                    <span className="akun" >Hi, {this.props.username}</span>
-                                                </button>
-                                            </a></li> */}
                                             <Link to='/akun'>
                                                 <button className="btnakun btn-outline-light px-4 "
                                                     style={{ borderRadius: "25px", cursor: "pointer" }}>

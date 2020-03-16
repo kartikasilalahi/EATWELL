@@ -1498,6 +1498,7 @@ figure.effect-winston:hover p a:first-child i {
 
 .icon-invoice:hover{
 	color: green;
+	font-weight: bold;
 }
 
 .invoice-transaction{
