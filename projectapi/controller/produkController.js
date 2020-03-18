@@ -513,7 +513,7 @@ module.exports = {
             sql = `SELECT count(*) AS jumlah FROM produk WHERE namaproduk LIKE '%${keyword}%' AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}'`
             if (category != 0) {
                 sql = `SELECT count(*) AS jumlah 
-                FROM produk p p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                FROM produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 WHERE p.namaproduk LIKE '%${keyword}%' 
                 AND kp.id=${category}
                 AND tanggalakhir > '${now}' 
