@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Carousel } from 'react-responsive-carousel'
 import Footer from '../components/footer'
-import { APIURL, APIURLimagetoko } from '../helper/apiurl'
+import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
 import { MdRestaurant } from 'react-icons/md'
 import Axios from "axios"
 import { Input } from 'reactstrap'
@@ -17,7 +17,10 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
 import Toast from 'light-toast'
 import Pagination from '../components/pagination'
-import Loadingspinner from 'react-spinners/PulseLoader'
+// import Loadingspinner from 'react-spinners/PulseLoader'
+// import querystring from 'query-string'
+import { MDBIcon } from "mdbreact";
+
 
 
 class Home extends Component {
@@ -27,7 +30,10 @@ class Home extends Component {
         currentProduk: [],
         currentPage: null,
         totalPages: null,
-        searchfield: ''
+        searchfield: '',
+        filterby: 0,
+        datafilter: [],
+        category: []
     }
 
     // COMPONENTDIDMOUNT
@@ -35,13 +41,46 @@ class Home extends Component {
         AOS.init({ duration: 1000 })
         Axios.get(`${APIURL}produk/dataprod`)
             .then((res) => {
-                this.setState({ dataProduk: res.data.dataproduk })
-                var selectedproduk = this.state.dataProduk.filter((val, index) => this.state.dataProduk[index].diskon >= 40)
+                this.setState({ dataProduk: res.data.dataproduk, datafilter: res.data.dataproduk })
+                var selectedproduk = this.state.datafilter.filter((val, index) => this.state.datafilter[index].diskon >= 40)
                 this.setState({ specialProduk: selectedproduk })
+            }).catch((err) => { console.log(err) })
+
+        Axios.get(`${APIURL}produk/kategoriproduk`)
+            .then(res => this.setState({ category: res.data }))
+            .catch((err) => { console.log(err) })
+    }
+
+    // ADD TO WISHLIST
+    // ==============
+    addToWishList = (index) => {
+        let idproduk = this.state.dataProduk[index].id
+        let iduser = localStorage.getItem('id')
+        let datawishlist = {
+            idproduk, iduser
+        }
+        console.log(datawishlist)
+        Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
+            .then(() => {
+                Toast.loading(`Add to Wishlist. Please wait a moment`);
+                setTimeout(() => {
+                    Toast.success('Success. Product already add to my wishlist', 2000)
+                    Toast.hide();
+                }, 3000);
+            }).catch((err) => { console.log(err) })
+    }
+
+
+    // RENDER CATEGORY
+    // ===============
+    renderCategory = () => {
+        if (this.state.category) {
+            return this.state.category.map((val, i) => {
+                return (
+                    <option key={i} value={val.id}>{val.namakategori}</option>
+                )
             })
-            .catch((err) => {
-                console.log(err)
-            })
+        }
     }
 
     // ON PAGE CHANGE
@@ -58,27 +97,6 @@ class Home extends Component {
         this.setState({ currentPage, currentProduk, totalPages });
     };
 
-    // DD TO WISHLIST
-    // ==============
-    addToWishList = (index) => {
-        let idproduk = this.state.dataProduk[index].id
-        let iduser = localStorage.getItem('id')
-        let datawishlist = {
-            idproduk, iduser
-        }
-        console.log(datawishlist)
-        Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
-            .then(() => {
-                Toast.loading(`Add to Wishlist. Please wait a moment`);
-                setTimeout(() => {
-                    // this.setState({ modalbuy: false, trans: true })
-                    Toast.success('Success. Product already add to my wishlist', 2000)
-                    Toast.hide();
-                }, 3000);
-            }).catch((err) => {
-                console.log(err)
-            })
-    }
 
     // RENDER SPECIAL PRODUK
     // =====================
@@ -117,14 +135,21 @@ class Home extends Component {
         })
     }
 
+    klikSearch = () => {
+        const { filterby, dataProduk, datafilter, searchfield } = this.state
+        console.log('search field', searchfield)
+        console.log('seacrhby', filterby)
 
-    // RENDER GALLERY.
+
+    }
+
+    // RENDER GALLERY. this.setState({ dataProduk: res.data })
     // ===============
     renderallproduct = () => {
-        return this.state.dataProduk.map((val, index) => {
-            // console.log(this.state.dataProduk)
-            const discount = this.state.dataProduk[index].diskon
-            const harganormal = this.state.dataProduk[index].harganormal
+        const { filterby, dataProduk, datafilter, searchfield } = this.state
+        return dataProduk.map((val, index) => {
+            const discount = dataProduk[index].diskon
+            const harganormal = dataProduk[index].harganormal
             const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
             return (
                 <Fade key={index} bottom cascade>
@@ -236,7 +261,6 @@ class Home extends Component {
                                 pageNeighbours={0}
                                 onPageChanged={this.onPageChanged}
                             />
-                            {console.log(totalPages)}
                         </div>
                     </div>
 
@@ -307,22 +331,15 @@ class Home extends Component {
         )
     }
 
-    // ONSEARCH CAHANGE
-    // =================
-    onSearchChange = (e) => {
-        this.setState({ searchfield: e.target.value })
-    }
-
-
     render() {
-        console.log(this.state.searchfield)
+        let { searchfield, filterby } = this.state
         return (
             <div className="homepage">
                 <Header />
 
                 <div className="section1">
                     <div className="kontentjudul" >
-                        <h3 data-aos="zoom-in" data-aos-duration='1000' className="wellcome">- Hello there,</h3>
+                        <h3 data-aos="zoom-in" data-aos-duration='2000' className="wellcome" style={{ fontWeight: 'bold' }}>- Hello there,</h3>
                         <h2 className="judul">Find the best promos around you<br />and let's eat well</h2>
 
                         <ul className="home-social">
@@ -353,30 +370,34 @@ class Home extends Component {
 
                 <div data-aos="fade-up" className="section4 p-5 mx-5" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     <p data-aos="fade-up" className="allpromos text-center">All Promos Item</p>
-                    <div data-aos="fade-up" className="row  gallery" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
-                        {/* {this.renderallproduct()} */}
-                        <div className="searchbox px-4 mx-auto pt-1 d-flex">
-                            <div>
-                                <Input type="search"
-                                    className="mb-3"
-                                    placeholder="search product.."
-                                    onChange={this.onSearchChange}
-                                />
-                            </div>
+                    <div className=" w-75 d-flex mx-auto mb-5" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
+                        <div style={{ width: '30%' }}>
+                            <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: Number(e.target.value) })}>
+                                <option value={0}>All Catgeory</option>
+                                {this.renderCategory()}
+                            </Input>
                         </div>
-                        {
-                            this.state.dataProduk ?
-                                this.renderpagination() : <Loadingspinner
-                                    size={8}
-                                    color={"#31332F"}
-                                    margin={2}
-                                />
-                        }
+                        <div className="ml-0" style={{ width: '60%' }}>
+                            <Input type="search"
+                                className="mb-3"
+                                placeholder="search product.."
+                                onChange={(e) => { this.setState({ searchfield: e.target.value }) }}
+                            />
+                        </div>
+                        <div className="mx-0 input-group-prepend" >
+                            <a href={`${URL}search_result?keyword=${searchfield}&category=${filterby}`} style={{ height: '45px', textDecoration: 'none' }} >
+                                <span className="input-group-text gray lighten-3" id="basic-text1" style={{ cursor: 'pointer', height: '38px' }}>
+                                    <MDBIcon className="text-grey" icon="search" />
+                                </span>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                    <div data-aos="fade-up" className="row  gallery" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+                        {this.renderallproduct()}
+                    </div>
+                </div >
                 <Footer />
-            </div>
-
+            </div >
         );
     }
 }
@@ -400,3 +421,32 @@ export default connect(MapStateToProps, { Open_Login, Open_Register, PembeliRegi
 
 
 
+
+
+
+
+
+
+
+
+
+
+{/* <div className="searchbox px-4 mx-auto pt-1 d-flex">
+                            <div>
+                                <Input type="search"
+                                    className="mb-3"
+                                    placeholder="search product.."
+                                    onChange={this.onSearchChange}
+                                />
+                            </div>
+                        </div>
+                        {
+                            this.state.dataProduk ?
+                                this.renderpagination()
+                                :
+                                <Loadingspinner
+                                    size={8}
+                                    color={"#31332F"}
+                                    margin={2}
+                                />
+                        } */}

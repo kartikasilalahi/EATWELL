@@ -74,7 +74,7 @@ class Lamanmitra extends Component {
                             <p style={{ fontSize: "24px" }}>" An effective and efficient way to promote your product in the digital era "</p>
                             <p style={{ fontSize: "20px", color: 'green' }}> Interesting, flexible and viral - it's the most advanced sales platform in the market today...</p>
                             <div className="btnjoin">
-                                <button className="btn btn-outline-dark-green" style={{ borderRadius: "25px", scrollBehavior: 'smooth' }}><a className="regist" href="#toregister">Register now</a></button>
+                                <button className="btn btn-outline-dark-green" style={{ borderRadius: "25px" }}><a className="regist" href="#toregister">Register now</a></button>
                             </div>
                         </div>
                     </div>

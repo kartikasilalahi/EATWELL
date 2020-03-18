@@ -20,6 +20,8 @@ html {
 @import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
 
+
+
 /* --------------------------------------------------------
                         start modalloginregister 
 ---------------------------------------------------------- */
@@ -519,9 +521,6 @@ figure.effect-winston:hover p a:first-child i {
 
 }
 
-.searchbox {
-	border-radius: 20px;
-}
 
 .specials {
 	background-color: whitesmoke;

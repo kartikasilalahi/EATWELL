@@ -16,6 +16,7 @@ import Waitingverified from './components/waitingverified'
 import AkunUser from './pages/user/akun'
 import Lamanadmin from './pages/admin/lamanadmin'
 import Notfound from './components/notfound'
+import Searchresult from './pages/searchResult'
 
 class App extends Component {
 
@@ -51,6 +52,7 @@ class App extends Component {
           <Route exact path='/akun' exact component={AkunUser} />
           <Route exact path='/admin' exact component={Lamanadmin} />
           <Route exact path='/notfound' exact component={Notfound} />
+          <Route exact path='/search_result' exact component={Searchresult} />
         </Switch>
       </div>
     );
