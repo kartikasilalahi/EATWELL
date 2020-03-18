@@ -135,6 +135,8 @@ class Home extends Component {
         })
     }
 
+    // ON KLIK SEARCH
+    // ==============
     klikSearch = () => {
         const { filterby, dataProduk, datafilter, searchfield } = this.state
         console.log('search field', searchfield)
@@ -385,7 +387,7 @@ class Home extends Component {
                             />
                         </div>
                         <div className="mx-0 input-group-prepend" >
-                            <a href={`${URL}search_result?keyword=${searchfield}&category=${filterby}`} style={{ height: '45px', textDecoration: 'none' }} >
+                            <a href={`${URL}search_result?keyword=${searchfield}&page=1&category=${filterby}`} style={{ height: '45px', textDecoration: 'none' }} >
                                 <span className="input-group-text gray lighten-3" id="basic-text1" style={{ cursor: 'pointer', height: '38px' }}>
                                     <MDBIcon className="text-grey" icon="search" />
                                 </span>

@@ -466,8 +466,46 @@ module.exports = {
     // SEARCH PRODUCT
     // ==============
     searchProduct: (req, res) => {
+        let now = moment().format("YYYY-MM-DD")
+        let { keyword, category } = req.query
+        if (!category) {
+            category = ''
+        }
+        let sql = ''
+        if (category == 0) {
+            sql = `SELECT 
+                    p.id, 
+                    p.namaproduk, 
+                    p.harganormal, 
+                    p.diskon,  
+                    p.kuota,
+                    p.terjual,
+                    kp.namakategori,
+                    t.namatoko,
+                    i.image FROM 
+                produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                LEFT JOIN toko t ON p.idtoko = t.usertokoid
+                LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
+        }
+        else if (category != 0) {
+            sql = `SELECT 
+                    p.id, 
+                    p.namaproduk, 
+                    p.harganormal, 
+                    p.diskon,  
+                    p.kuota,
+                    p.terjual,
+                    kp.namakategori,
+                    t.namatoko,
+                    i.image FROM 
+                produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                LEFT JOIN toko t ON p.idtoko = t.usertokoid
+                LEFT JOIN images i ON p.id=i.idproduk WHERE kp.id=${category} AND p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
+        }
 
+        mysql.query(sql, (err, result) => {
+            if (err) return res.status(500).send(err)
+            return res.status(200).send(result)
+        })
     }
-
-
 }

@@ -5,6 +5,8 @@ const router = express.Router()
 
 router.get('/dataprod', produkController.getProduk)
 
+router.get('/search-product', produkController.searchProduct)
+
 router.get('/filterproduct/:filterby', produkController.filterProduct)
 
 router.get('/expprod/:idtoko', produkController.getEXpProduk)
