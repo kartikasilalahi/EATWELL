@@ -467,9 +467,13 @@ module.exports = {
     // ==============
     searchProduct: (req, res) => {
         let now = moment().format("YYYY-MM-DD")
-        let { keyword, category } = req.query
-        if (!category) {
-            category = ''
+        let { keyword, page, category } = req.query
+        var offset = (page * 12) - 12//2 karena 1 page a=hanya 2 product ini nanti diganti
+        if (!page) {
+            offset = 0
+        }
+        if (!keyword) {
+            keyword = ''
         }
         let sql = ''
         if (category == 0) {
@@ -485,7 +489,7 @@ module.exports = {
                     i.image FROM 
                 produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
-                LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
+                LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk LIKE '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
         }
         else if (category != 0) {
             sql = `SELECT 
@@ -505,7 +509,20 @@ module.exports = {
 
         mysql.query(sql, (err, result) => {
             if (err) return res.status(500).send(err)
-            return res.status(200).send(result)
+            // return res.status(200).send(result)
+            sql = `SELECT count(*) AS jumlah FROM produk WHERE namaproduk LIKE '%${keyword}%' AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}'`
+            if (category != 0) {
+                sql = `SELECT count(*) AS jumlah 
+                FROM produk p p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                WHERE p.namaproduk LIKE '%${keyword}%' 
+                AND kp.id=${category}
+                AND tanggalakhir > '${now}' 
+                AND tanggalmulai <= '${now}'`
+            }
+            mysql.query(sql, (err1, result1) => {
+                if (err1) return res.status(500).send(err1)
+                return res.status(200).send({ produk: result, jumlahprod: result1[0] })
+            })
         })
     }
 }

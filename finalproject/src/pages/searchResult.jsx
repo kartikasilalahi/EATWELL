@@ -21,7 +21,8 @@ export default class searchResult extends Component {
         searchfield: '',
         filterby: 0,
         category: [],
-        allproduct: []
+        allproduct: [],
+        jumlahProduk: 0
     }
 
     componentDidMount() {
@@ -30,7 +31,7 @@ export default class searchResult extends Component {
             .then(res => this.setState({ category: res.data }))
             .catch((err) => { console.log(err) })
         Axios.get(`${APIURL}produk/search-product?keyword=${search.keyword}&page=1&category=${search.category}`)
-            .then(res1 => this.setState({ allproduct: res1.data }))
+            .then(res1 => this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah }))
             .catch((err1) => { console.log(err1) })
     }
 
@@ -110,13 +111,13 @@ export default class searchResult extends Component {
 
     render() {
         const result = queryString.parse(this.props.location.search)
-        console.log('INIIIIII', result.keyword)
+        console.log('INIIIIII', this.state.jumlahProduk)
         const { filterby, searchfield } = this.state
         return (
             <div>
                 <div style={{ height: '75px', backgroundColor: 'black' }}><Header /></div>
-                {/* <div className="m-4">
-                    <div className=" w-75 d-flex mx-auto mb-5" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
+                <div className="m-4">
+                    <div className=" w-75 d-flex mx-auto mb-3" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
                         <div style={{ width: '30%' }}>
                             <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: Number(e.target.value) })}>
                                 <option value={0}>All Catgeory</option>
@@ -138,9 +139,12 @@ export default class searchResult extends Component {
                             </a>
                         </div>
                     </div>
-                </div> */}
+                </div>
 
-                <div className="row gallery" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+                <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
+                    <h6>Result ({this.state.jumlahProduk} Products)</h6>
+                </div>
+                <div className="row gallery px-5 mx-5 my-1" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     {this.renderResultsearch()}
                 </div>
             </div >
