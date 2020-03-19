@@ -1,37 +1,53 @@
 import React, { Component } from 'react'
-import Header from '../components/mainheader'
-import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
-import { Input } from 'reactstrap'
 import queryString from 'query-string'
-import Axios from 'axios'
-import 'aos/dist/aos.css'
-import { Link } from 'react-router-dom';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fade from 'react-reveal/Fade';
 import Numeral from 'numeral'
+import Axios from 'axios'
+import 'aos/dist/aos.css'
+import { Link } from 'react-router-dom';
 import { MdRestaurant } from 'react-icons/md'
-import Toast from 'light-toast'
-import { MDBIcon } from "mdbreact";
-import AOS from 'aos'
+import { MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBCol } from "mdbreact";
+import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
+import { Input } from 'reactstrap'
+import Header from '../components/mainheader'
+// import Toast from 'light-toast'
+// import AOS from 'aos'
 
 export default class searchResult extends Component {
 
     state = {
-        searchfield: '',
+        searchfield: 'All Product',
         filterby: 0,
-        category: [],
+        listcategory: [],
         allproduct: [],
-        jumlahProduk: 0
+        jumlahProduk: 0,
+        currentpage: 0,
+        category: 'All Category'
+
     }
 
     componentDidMount() {
         const search = queryString.parse(this.props.location.search)
         Axios.get(`${APIURL}produk/kategoriproduk`)
-            .then(res => this.setState({ category: res.data }))
+            .then(res => this.setState({ listcategory: res.data }))
             .catch((err) => { console.log(err) })
         Axios.get(`${APIURL}produk/search-product?keyword=${search.keyword}&page=1&category=${search.category}`)
-            .then(res1 => this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah }))
+            .then(res1 => {
+                if (res1.data.produklength === 0) {
+                    this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah, currentpage: parseInt(search.page), category: '', filterby: parseInt(search.category) })
+                }
+                else {
+                    if (search.page != 0) {
+                        this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah, currentpage: parseInt(search.page), category: res1.data.produk[0].namakategori, filterby: parseInt(search.category) })
+                        if (search.keyword) this.setState({ searchfield: search.keyword })
+                    } else {
+                        this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah, currentpage: parseInt(search.page) })
+
+                    }
+                }
+            })
             .catch((err1) => { console.log(err1) })
     }
 
@@ -39,11 +55,12 @@ export default class searchResult extends Component {
     // RENDER CATEGORY
     // ===============
     renderCategory = () => {
-        if (this.state.category) {
-            return this.state.category.map((val, i) => {
-                return (
-                    <option key={i} value={val.id}>{val.namakategori}</option>
-                )
+        if (this.state.listcategory) {
+            return this.state.listcategory.map((val, i) => {
+                if (this.state.filterby == val.id) {
+                    return <option key={i} value={val.id} selected > {val.namakategori}</option >
+                }
+                return <option key={i} value={val.id} > {val.namakategori}</option >
             })
         }
     }
@@ -142,10 +159,63 @@ export default class searchResult extends Component {
                 </div>
 
                 <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
+                    <h6>Search results for '{this.state.searchfield}' with the category '{this.state.category}'</h6>
                     <h6>Result ({this.state.jumlahProduk} Products)</h6>
                 </div>
                 <div className="row gallery px-5 mx-5 my-1" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     {this.renderResultsearch()}
+                </div>
+                <div className="pagination mx-auto pb-5" style={{ width: '43%' }} >
+                    <MDBCol>
+                        <MDBPagination circle>
+                            <MDBPageItem disabled>
+                                <MDBPageNav className="page-link">
+                                    <span>First</span>
+                                </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem disabled>
+                                <MDBPageNav className="page-link" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span className="sr-only">Previous</span>
+                                </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem active>
+                                <MDBPageNav className="page-link">
+                                    1 <span className="sr-only">(current)</span>
+                                </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem>
+                                <MDBPageNav className="page-link">
+                                    2
+                                    </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem>
+                                <MDBPageNav className="page-link">
+                                    3
+                                    </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem>
+                                <MDBPageNav className="page-link">
+                                    4
+                                    </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem>
+                                <MDBPageNav className="page-link">
+                                    5
+                                    </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem>
+                                <MDBPageNav className="page-link">
+                                    &raquo;
+                                    </MDBPageNav>
+                            </MDBPageItem>
+                            <MDBPageItem>
+                                <MDBPageNav className="page-link">
+                                    Last
+                                    </MDBPageNav>
+                            </MDBPageItem>
+                        </MDBPagination>
+                    </MDBCol>
                 </div>
             </div >
         )

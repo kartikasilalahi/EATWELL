@@ -17,6 +17,7 @@ import AkunUser from './pages/user/akun'
 import Lamanadmin from './pages/admin/lamanadmin'
 import Notfound from './components/notfound'
 import Searchresult from './pages/searchResult'
+import Tst from './pages/test'
 
 class App extends Component {
 
@@ -53,6 +54,7 @@ class App extends Component {
           <Route exact path='/admin' exact component={Lamanadmin} />
           <Route exact path='/notfound' exact component={Notfound} />
           <Route exact path='/search_result' exact component={Searchresult} />
+          <Route exact path='/tst' exact component={Tst} />
         </Switch>
       </div>
     );

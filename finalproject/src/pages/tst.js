@@ -1,1 +1,0 @@
-console.log(37 % 6)

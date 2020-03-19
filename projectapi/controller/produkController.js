@@ -521,7 +521,7 @@ module.exports = {
             }
             mysql.query(sql, (err1, result1) => {
                 if (err1) return res.status(500).send(err1)
-                return res.status(200).send({ produk: result, jumlahprod: result1[0] })
+                return res.status(200).send({ produk: result, produklength: result.length, jumlahprod: result1[0] })
             })
         })
     }
