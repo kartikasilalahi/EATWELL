@@ -20,10 +20,6 @@ function Akunuser() {
     })
 
     let id = localStorage.getItem('id')
-    if (!id) {
-        return <Redirect to='/notfound' />
-    }
-
     return (
         <div>
             <div style={{ height: "78px", backgroundColor: "rgba(0,0,0,.9)" }}>

@@ -16,7 +16,7 @@ class Header extends Component {
         lastScrollY: 0,
         background: '',
         role: 0,
-        logout: 'false'
+        logout: false
     }
 
     componentWillMount() {
@@ -74,7 +74,7 @@ class Header extends Component {
                             localStorage.removeItem("id");
                             localStorage.removeItem("token");
                             this.props.Logout_Success()
-                            this.setState({ logout: 'true' })
+                            this.setState({ logout: true })
 
                         })
                     })
@@ -155,6 +155,7 @@ class Header extends Component {
 
     render() {
         const { roleid } = this.props
+        if (this.state.logout) return <Redirect to='/' />
         if (roleid === 2) {
             return <Redirect to='/lamanmitra' />
         } else if (roleid === 3) {
