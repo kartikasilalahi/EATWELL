@@ -34,7 +34,7 @@ export default class searchResult extends Component {
         Axios.get(`${APIURL}produk/kategoriproduk`)
             .then(res => this.setState({ listcategory: res.data }))
             .catch((err) => { console.log(err) })
-        Axios.get(`${APIURL}produk/search-product?keyword=${search.keyword}&page=1&category=${search.category}`)
+        Axios.get(`${APIURL}produk/search-product?keyword=${search.keyword}&page=${search.page}&category=${search.category}`)
             .then(res1 => {
                 if (res1.data.produklength === 0) {
                     console.log('masuk sini')
@@ -234,7 +234,6 @@ export default class searchResult extends Component {
                     {this.renderResultsearch()}
                 </div>
                 <div className="pagination d-flex justify-content-center pb-5">
-
                     <Pagination aria-label="Page navigation example">
                         <PaginationItem disabled={currentpage === 1 ? true : false}>
                             <PaginationLink first href={`${URL}search_result?keyword=${search.keyword}&page=${1}&category=${filterby}`} />

@@ -475,8 +475,23 @@ module.exports = {
         if (!keyword) {
             keyword = ''
         }
-        let sql = ''
-        if (category == 'All Category') {
+        // let sql = ''
+        // if (category == 'All Category') {
+        let sql = `SELECT 
+                    p.id, 
+                    p.namaproduk, 
+                    p.harganormal, 
+                    p.diskon,  
+                    p.kuota,
+                    p.terjual,
+                    kp.namakategori,
+                    t.namatoko,
+                    i.image FROM 
+                produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                LEFT JOIN toko t ON p.idtoko = t.usertokoid
+                LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk LIKE '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC limit ${offset},12;`
+        // }
+        if (category !== 'All Category') {
             sql = `SELECT 
                     p.id, 
                     p.namaproduk, 
@@ -489,22 +504,7 @@ module.exports = {
                     i.image FROM 
                 produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
-                LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk LIKE '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
-        }
-        else if (category !== 'All Category') {
-            sql = `SELECT 
-                    p.id, 
-                    p.namaproduk, 
-                    p.harganormal, 
-                    p.diskon,  
-                    p.kuota,
-                    p.terjual,
-                    kp.namakategori,
-                    t.namatoko,
-                    i.image FROM 
-                produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
-                LEFT JOIN toko t ON p.idtoko = t.usertokoid
-                LEFT JOIN images i ON p.id=i.idproduk WHERE kp.namakategori='${category}' AND p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
+                LEFT JOIN images i ON p.id=i.idproduk WHERE kp.namakategori='${category}' AND p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}'ORDER BY p.id DESC limit ${offset},12 ;`
         }
 
         mysql.query(sql, (err, result) => {
