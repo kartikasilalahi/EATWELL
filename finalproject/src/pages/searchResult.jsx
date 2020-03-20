@@ -198,6 +198,7 @@ export default class searchResult extends Component {
         let search = queryString.parse(this.props.location.search)
         let lastitem = Math.ceil(jumlahProduk / 12)
 
+
         return (
             <div>
                 <div style={{ height: '75px', backgroundColor: 'black' }}><Header /></div>
@@ -226,30 +227,40 @@ export default class searchResult extends Component {
                     </div>
                 </div>
 
-                <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
-                    <h6>Search results for '{searchfield}' with the category '{filterby}'</h6>
-                    <h6>Result ({jumlahProduk} Products)</h6>
-                </div>
-                <div className="row gallery px-5 mx-5 my-1" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
-                    {this.renderResultsearch()}
-                </div>
-                <div className="pagination d-flex justify-content-center pb-5">
-                    <Pagination aria-label="Page navigation example">
-                        <PaginationItem disabled={currentpage === 1 ? true : false}>
-                            <PaginationLink first href={`${URL}search_result?keyword=${search.keyword}&page=${1}&category=${filterby}`} />
-                        </PaginationItem>
-                        <PaginationItem disabled={currentpage === 1 ? true : false}>
-                            <PaginationLink previous href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) - 1}&category=${filterby}`} />
-                        </PaginationItem>
-                        {this.renderPagination()}
-                        <PaginationItem disabled={currentpage === lastitem ? true : false}>
-                            <PaginationLink next href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) + 1}&category=${filterby}`} />
-                        </PaginationItem>
-                        <PaginationItem disabled={currentpage === lastitem ? true : false}>
-                            <PaginationLink last href={`${URL}search_result?keyword=${search.keyword}&page=${lastitem}&category=${filterby}`} />
-                        </PaginationItem>
-                    </Pagination>
-                </div>
+                {
+                    jumlahProduk ?
+                        <div>
+                            <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
+                                <h6>Search results for '{searchfield}' with the category '{filterby}'</h6>
+                                <h6>Result ({jumlahProduk} Products)</h6>
+                            </div>
+                            <div className="row gallery px-5 mx-5 my-1" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+                                {this.renderResultsearch()}
+                            </div>
+                            <div className="pagination d-flex justify-content-center pb-5">
+                                <Pagination aria-label="Page navigation example">
+                                    <PaginationItem disabled={currentpage === 1 ? true : false}>
+                                        <PaginationLink first href={`${URL}search_result?keyword=${search.keyword}&page=${1}&category=${filterby}`} />
+                                    </PaginationItem>
+                                    <PaginationItem disabled={currentpage === 1 ? true : false}>
+                                        <PaginationLink previous href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) - 1}&category=${filterby}`} />
+                                    </PaginationItem>
+                                    {this.renderPagination()}
+                                    <PaginationItem disabled={currentpage === lastitem ? true : false}>
+                                        <PaginationLink next href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) + 1}&category=${filterby}`} />
+                                    </PaginationItem>
+                                    <PaginationItem disabled={currentpage === lastitem ? true : false}>
+                                        <PaginationLink last href={`${URL}search_result?keyword=${search.keyword}&page=${lastitem}&category=${filterby}`} />
+                                    </PaginationItem>
+                                </Pagination>
+                            </div>
+                        </div>
+                        // : <h5 style={{ color: 'gray', textAlign: "center" }}> There is no product you want </h5>
+                        : <div className="text-center mx-auto w-100 font-weight-bold" style={{ color: 'grey', fontSize: '20px' }}>Product not found<br />
+                        Please try other or more general keywords :)</div>
+                }
+
+
             </div >
         )
     }
