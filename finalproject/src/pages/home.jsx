@@ -31,12 +31,13 @@ class Home extends Component {
         searchfield: '',
         filterby: 'All Category',
         category: [],
-        popoverOpen: false,
-        value: 2
-    }
-
-    toggle = () => {
-        this.setState({ popoverOpen: !this.state.popoverOpen })
+        popoverOpenPrice: false,
+        popoverOpenOption: false,
+        value: 2,
+        rangeprice: {
+            min: 5,
+            max: 15
+        }
     }
 
     // COMPONENTDIDMOUNT
@@ -202,11 +203,47 @@ class Home extends Component {
 
 
     render() {
-        let { searchfield, filterby } = this.state
+        let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, value } = this.state
         console.log(filterby)
         return (
             <div className="homepage">
                 <Header />
+                {/* popver range price */}
+                <Popover placement="bottom" isOpen={popoverOpenPrice} target="price" toggle={() => this.setState({ popoverOpenPrice: !popoverOpenPrice })
+                }>
+                    <PopoverBody>
+                        <InputRange
+                            maxValue={20}
+                            minValue={0}
+                            value={value}
+                            onChange={value => this.setState({ value })}
+                            onChangeComplete={value => console.log(value)} />
+
+                        <InputRange
+                            draggableTrack
+                            maxValue={20}
+                            minValue={0}
+                            onChange={value => this.setState({ rangeprice: value })}
+                            onChangeComplete={value => console.log(value)}
+                            value={this.state.rangeprice} />
+
+                        <div className='d-flex justify-content-between'>
+                            <Button onClick={() => { this.setState({ popoverOpenPrice: !popoverOpenPrice }) }
+                            } size='sm' className="py-1 btn btn-grey">x</Button>
+                            <Button size='sm' className="py-1 btn btn-grey">ok</Button>
+                        </div>
+                    </PopoverBody>
+                </Popover>
+
+                {/* popover filter option */}
+                <Popover placement="bottom" isOpen={popoverOpenOption} target="filterOption" toggle={() => this.setState({ popoverOpenOption: !popoverOpenOption })}>
+                    <PopoverBody>
+                        <div className='d-flex justify-content-between'>
+                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption })} size='sm' className="py-1 btn btn-grey">x</Button>
+                            <Button size='sm' className="py-1 btn btn-grey">ok</Button>
+                        </div>
+                    </PopoverBody>
+                </Popover>
 
                 <div className="section1">
                     <div className="kontentjudul" >
@@ -242,6 +279,7 @@ class Home extends Component {
                 <div data-aos="fade-up" className="section4 p-5 mx-5" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     <p data-aos="fade-up" className="allpromos text-center">All Promos Item</p>
 
+                    {/* search box */}
                     <div className=" w-75 d-flex mx-auto mb-5" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
                         <div style={{ width: '30%' }}>
                             <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: e.target.value })}>
@@ -266,23 +304,14 @@ class Home extends Component {
                     </div>
 
                     <div className="section-sort d-flex " style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+                        {/* filter by price only */}
                         <div className="priceonly mr-auto pl-2">
                             <Button className="btn btn-grey" size='sm' id="price" >
                                 {'Rp.0.00 - Rp.500.000'}
                             </Button>
                         </div>
-                        {/* <div> */}
-                        <Popover placement="top" isOpen={this.state.popoverOpen} target="price" toggle={this.toggle}>
-                            <PopoverBody>
-                                <InputRange
-                                    maxValue={20}
-                                    minValue={0}
-                                    value={this.state.value}
-                                    onChange={value => this.setState({ value })}
-                                    onChangeComplete={value => console.log(value)} />
-                            </PopoverBody>
-                        </Popover>
-                        {/* </div> */}
+
+                        {/* filter by many options */}
                         <div className="filter-option ml-auto pr-2">
                             <Button className="btn btn-grey" size='sm' id="filterOption" >
                                 Sort By
