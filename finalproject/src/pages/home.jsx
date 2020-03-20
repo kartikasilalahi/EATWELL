@@ -271,15 +271,18 @@ class Home extends Component {
                                 {'Rp.0.00 - Rp.500.000'}
                             </Button>
                         </div>
+                        {/* <div> */}
                         <Popover placement="top" isOpen={this.state.popoverOpen} target="price" toggle={this.toggle}>
-                            <PopoverBody>Sed posuere .
+                            <PopoverBody>
                                 <InputRange
                                     maxValue={20}
                                     minValue={0}
                                     value={this.state.value}
-                                    onChange={value => this.setState({ value })} />
+                                    onChange={value => this.setState({ value })}
+                                    onChangeComplete={value => console.log(value)} />
                             </PopoverBody>
                         </Popover>
+                        {/* </div> */}
                         <div className="filter-option ml-auto pr-2">
                             <Button className="btn btn-grey" size='sm' id="filterOption" >
                                 Sort By
