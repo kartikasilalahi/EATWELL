@@ -8,9 +8,9 @@ import Axios from 'axios'
 import 'aos/dist/aos.css'
 import { Link } from 'react-router-dom';
 import { MdRestaurant } from 'react-icons/md'
-import { MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBCol } from "mdbreact";
+import { MDBIcon } from "mdbreact";
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
-import { Input } from 'reactstrap'
+import { Input, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 import Header from '../components/mainheader'
 // import Toast from 'light-toast'
 // import AOS from 'aos'
@@ -19,31 +19,49 @@ export default class searchResult extends Component {
 
     state = {
         searchfield: 'All Product',
-        filterby: 0,
+        filterby: '',
+        newsearchfield: '',
+        newfilterby: 'All Category',
         listcategory: [],
         allproduct: [],
         jumlahProduk: 0,
         currentpage: 0,
-        category: 'All Category'
-
     }
 
     componentDidMount() {
-        const search = queryString.parse(this.props.location.search)
+        let search = queryString.parse(this.props.location.search)
+        console.log(search.category)
         Axios.get(`${APIURL}produk/kategoriproduk`)
             .then(res => this.setState({ listcategory: res.data }))
             .catch((err) => { console.log(err) })
         Axios.get(`${APIURL}produk/search-product?keyword=${search.keyword}&page=1&category=${search.category}`)
             .then(res1 => {
                 if (res1.data.produklength === 0) {
-                    this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah, currentpage: parseInt(search.page), category: '', filterby: parseInt(search.category) })
+                    console.log('masuk sini')
+                    this.setState({
+                        allproduct: res1.data.produk,
+                        jumlahProduk: res1.data.jumlahprod.jumlah,
+                        currentpage: parseInt(search.page),
+                        filterby: search.category
+                    })
                 }
                 else {
                     if (search.page != 0) {
-                        this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah, currentpage: parseInt(search.page), category: res1.data.produk[0].namakategori, filterby: parseInt(search.category) })
                         if (search.keyword) this.setState({ searchfield: search.keyword })
+
+                        this.setState({
+                            allproduct: res1.data.produk,
+                            jumlahProduk: res1.data.jumlahprod.jumlah,
+                            currentpage: parseInt(search.page),
+                            filterby: search.category
+                        })
+
                     } else {
-                        this.setState({ allproduct: res1.data.produk, jumlahProduk: res1.data.jumlahprod.jumlah, currentpage: parseInt(search.page) })
+                        this.setState({
+                            allproduct: res1.data.produk,
+                            jumlahProduk: res1.data.jumlahprod.jumlah,
+                            currentpage: parseInt(search.page)
+                        })
 
                     }
                 }
@@ -57,10 +75,10 @@ export default class searchResult extends Component {
     renderCategory = () => {
         if (this.state.listcategory) {
             return this.state.listcategory.map((val, i) => {
-                if (this.state.filterby == val.id) {
-                    return <option key={i} value={val.id} selected > {val.namakategori}</option >
+                if (this.state.filterby == val.namakategori) {
+                    return <option key={i} value={val.namakategori} selected > {val.namakategori}</option >
                 }
-                return <option key={i} value={val.id} > {val.namakategori}</option >
+                return <option key={i} value={val.namakategori} > {val.namakategori}</option >
             })
         }
     }
@@ -126,18 +144,68 @@ export default class searchResult extends Component {
         })
     }
 
+    // RENDER PAGINATION
+    // =================
+    renderPagination = () => {
+        // this.state.jumlahProduk
+        let { currentpage, filterby } = this.state
+        let search = queryString.parse(this.props.location.search)
+        let lastitem = Math.ceil(this.state.jumlahProduk / 12)
+        console.log('last', lastitem)
+        let paging = []
+        if (lastitem === 1) {
+            paging.push(
+                <div>
+                    <PaginationItem active={currentpage === 1 ? true : false}>
+                        <PaginationLink href={`${URL}search_result?keyword=${search.keyword}&page=${1}`}>
+                            {1}
+                        </PaginationLink>
+                    </PaginationItem>
+                </div>
+            )
+        }
+        else {
+            for (let i = currentpage; i < currentpage + 2; i++) { //plus 2 karena 2 page aja
+                if (currentpage === lastitem) {
+                    paging.push(
+                        <div>
+                            <PaginationItem active={currentpage === i - 1 ? true : false}>
+                                <PaginationLink href={`${URL}search_result?keyword=${search.keyword}&page=${i - 1}&category=${filterby}`}>
+                                    {i - 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        </div>
+                    )
+                } else {
+                    paging.push(<div>
+                        <PaginationItem active={this.state.currentpage === i ? true : false}>
+                            <PaginationLink href={`${URL}search_result?keyword=${search.keyword}&page=${i}&category=${filterby}`}>
+                                {i}
+                            </PaginationLink>
+                        </PaginationItem>
+                    </div>
+                    )
+
+                }
+            }
+        }
+        return paging
+    }
+
     render() {
-        const result = queryString.parse(this.props.location.search)
-        console.log('INIIIIII', this.state.jumlahProduk)
-        const { filterby, searchfield } = this.state
+        // console.log('INIIIIII', this.state.jumlahProduk)
+        let { filterby, searchfield, currentpage, jumlahProduk, newfilterby, newsearchfield } = this.state
+        let search = queryString.parse(this.props.location.search)
+        let lastitem = Math.ceil(jumlahProduk / 12)
+
         return (
             <div>
                 <div style={{ height: '75px', backgroundColor: 'black' }}><Header /></div>
                 <div className="m-4">
                     <div className=" w-75 d-flex mx-auto mb-3" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
                         <div style={{ width: '30%' }}>
-                            <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: Number(e.target.value) })}>
-                                <option value={0}>All Catgeory</option>
+                            <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ newfilterby: e.target.value })}>
+                                <option value={'All Category'}>All Catgeory</option>
                                 {this.renderCategory()}
                             </Input>
                         </div>
@@ -145,11 +213,11 @@ export default class searchResult extends Component {
                             <Input type="search"
                                 className="mb-3"
                                 placeholder="search product.."
-                                onChange={(e) => { this.setState({ searchfield: e.target.value }) }}
+                                onChange={(e) => { this.setState({ newsearchfield: e.target.value }) }}
                             />
                         </div>
                         <div className="mx-0 input-group-prepend" >
-                            <a href={`${URL}search_result?keyword=${searchfield}&category=${filterby}`} style={{ height: '45px', textDecoration: 'none' }} >
+                            <a href={`${URL}search_result?keyword=${newsearchfield}&page=1&category=${newfilterby}`} style={{ height: '45px', textDecoration: 'none' }} >
                                 <span className="input-group-text gray lighten-3" id="basic-text1" style={{ cursor: 'pointer', height: '38px' }}>
                                     <MDBIcon className="text-grey" icon="search" />
                                 </span>
@@ -159,63 +227,29 @@ export default class searchResult extends Component {
                 </div>
 
                 <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
-                    <h6>Search results for '{this.state.searchfield}' with the category '{this.state.category}'</h6>
-                    <h6>Result ({this.state.jumlahProduk} Products)</h6>
+                    <h6>Search results for '{searchfield}' with the category '{filterby}'</h6>
+                    <h6>Result ({jumlahProduk} Products)</h6>
                 </div>
                 <div className="row gallery px-5 mx-5 my-1" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     {this.renderResultsearch()}
                 </div>
-                <div className="pagination mx-auto pb-5" style={{ width: '43%' }} >
-                    <MDBCol>
-                        <MDBPagination circle>
-                            <MDBPageItem disabled>
-                                <MDBPageNav className="page-link">
-                                    <span>First</span>
-                                </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem disabled>
-                                <MDBPageNav className="page-link" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span className="sr-only">Previous</span>
-                                </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem active>
-                                <MDBPageNav className="page-link">
-                                    1 <span className="sr-only">(current)</span>
-                                </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem>
-                                <MDBPageNav className="page-link">
-                                    2
-                                    </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem>
-                                <MDBPageNav className="page-link">
-                                    3
-                                    </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem>
-                                <MDBPageNav className="page-link">
-                                    4
-                                    </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem>
-                                <MDBPageNav className="page-link">
-                                    5
-                                    </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem>
-                                <MDBPageNav className="page-link">
-                                    &raquo;
-                                    </MDBPageNav>
-                            </MDBPageItem>
-                            <MDBPageItem>
-                                <MDBPageNav className="page-link">
-                                    Last
-                                    </MDBPageNav>
-                            </MDBPageItem>
-                        </MDBPagination>
-                    </MDBCol>
+                <div className="pagination d-flex justify-content-center pb-5">
+
+                    <Pagination aria-label="Page navigation example">
+                        <PaginationItem disabled={currentpage === 1 ? true : false}>
+                            <PaginationLink first href={`${URL}search_result?keyword=${search.keyword}&page=${1}&category=${filterby}`} />
+                        </PaginationItem>
+                        <PaginationItem disabled={currentpage === 1 ? true : false}>
+                            <PaginationLink previous href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) - 1}&category=${filterby}`} />
+                        </PaginationItem>
+                        {this.renderPagination()}
+                        <PaginationItem disabled={currentpage === lastitem ? true : false}>
+                            <PaginationLink next href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) + 1}&category=${filterby}`} />
+                        </PaginationItem>
+                        <PaginationItem disabled={currentpage === lastitem ? true : false}>
+                            <PaginationLink last href={`${URL}search_result?keyword=${search.keyword}&page=${lastitem}&category=${filterby}`} />
+                        </PaginationItem>
+                    </Pagination>
                 </div>
             </div >
         )

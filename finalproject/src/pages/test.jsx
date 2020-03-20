@@ -24,7 +24,7 @@ const PaginationPage = () => {
                         </MDBPageNav>
                     </MDBPageItem>
                     <MDBPageItem>
-                        <MDBPageNav className="page-link">
+                        <MDBPageNav className={`http://localhost:3000/produk/search_result?keyword=${'aa'}&page=${1}&category=${'a'}`}>
                             2
                         </MDBPageNav>
                     </MDBPageItem>

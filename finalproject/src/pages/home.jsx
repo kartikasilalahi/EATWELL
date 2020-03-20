@@ -31,7 +31,7 @@ class Home extends Component {
         currentPage: null,
         totalPages: null,
         searchfield: '',
-        filterby: 0,
+        filterby: 'All Category',
         datafilter: [],
         category: []
     }
@@ -77,7 +77,7 @@ class Home extends Component {
         if (this.state.category) {
             return this.state.category.map((val, i) => {
                 return (
-                    <option key={i} value={val.id}>{val.namakategori}</option>
+                    <option key={i} value={val.namakategori}>{val.namakategori}</option>
                 )
             })
         }
@@ -335,6 +335,7 @@ class Home extends Component {
 
     render() {
         let { searchfield, filterby } = this.state
+        console.log(filterby)
         return (
             <div className="homepage">
                 <Header />
@@ -374,8 +375,8 @@ class Home extends Component {
                     <p data-aos="fade-up" className="allpromos text-center">All Promos Item</p>
                     <div className=" w-75 d-flex mx-auto mb-5" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
                         <div style={{ width: '30%' }}>
-                            <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: Number(e.target.value) })}>
-                                <option value={0}>All Catgeory</option>
+                            <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: e.target.value })}>
+                                <option value={'All Category'}>All Category</option>
                                 {this.renderCategory()}
                             </Input>
                         </div>

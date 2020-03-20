@@ -476,7 +476,7 @@ module.exports = {
             keyword = ''
         }
         let sql = ''
-        if (category == 0) {
+        if (category == 'All Category') {
             sql = `SELECT 
                     p.id, 
                     p.namaproduk, 
@@ -491,7 +491,7 @@ module.exports = {
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
                 LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk LIKE '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
         }
-        else if (category != 0) {
+        else if (category !== 'All Category') {
             sql = `SELECT 
                     p.id, 
                     p.namaproduk, 
@@ -504,18 +504,18 @@ module.exports = {
                     i.image FROM 
                 produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
-                LEFT JOIN images i ON p.id=i.idproduk WHERE kp.id=${category} AND p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
+                LEFT JOIN images i ON p.id=i.idproduk WHERE kp.namakategori='${category}' AND p.namaproduk like '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC;`
         }
 
         mysql.query(sql, (err, result) => {
             if (err) return res.status(500).send(err)
             // return res.status(200).send(result)
             sql = `SELECT count(*) AS jumlah FROM produk WHERE namaproduk LIKE '%${keyword}%' AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}'`
-            if (category != 0) {
+            if (category !== 'All Category') {
                 sql = `SELECT count(*) AS jumlah 
                 FROM produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 WHERE p.namaproduk LIKE '%${keyword}%' 
-                AND kp.id=${category}
+                AND kp.namakategori = '${category}'
                 AND tanggalakhir > '${now}' 
                 AND tanggalmulai <= '${now}'`
             }
