@@ -8,7 +8,7 @@ import Axios from 'axios'
 import 'aos/dist/aos.css'
 import { Link } from 'react-router-dom';
 import { MdRestaurant } from 'react-icons/md'
-import { MDBIcon } from "mdbreact";
+import { MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBCol } from "mdbreact";
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
 import { Input, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 import Header from '../components/mainheader'
@@ -158,33 +158,33 @@ export default class searchResult extends Component {
         if (lastitem === 1) {
             paging.push(
                 <div>
-                    <PaginationItem active={currentpage === 1 ? true : false}>
-                        <PaginationLink href={`${URL}search_result?keyword=${search.keyword}&page=${1}`}>
+                    <MDBPageItem active={currentpage === 1 ? true : false}>
+                        <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${1}`}>
                             {1}
-                        </PaginationLink>
-                    </PaginationItem>
+                        </MDBPageNav>
+                    </MDBPageItem>
                 </div>
             )
         }
         else {
-            for (let i = currentpage; i < currentpage + 2; i++) { //plus 2 karena 2 page aja
+            for (let i = currentpage; i < currentpage + 2; i++) {
                 if (currentpage === lastitem) {
                     paging.push(
                         <div>
-                            <PaginationItem active={currentpage === i - 1 ? true : false}>
-                                <PaginationLink href={`${URL}search_result?keyword=${search.keyword}&page=${i - 1}&category=${filterby}`}>
+                            <MDBPageItem active={currentpage === i - 1 ? true : false}>
+                                <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${i - 1}&category=${filterby}`}>
                                     {i - 1}
-                                </PaginationLink>
-                            </PaginationItem>
+                                </MDBPageNav>
+                            </MDBPageItem>
                         </div>
                     )
                 } else {
                     paging.push(<div>
-                        <PaginationItem active={this.state.currentpage === i ? true : false}>
-                            <PaginationLink href={`${URL}search_result?keyword=${search.keyword}&page=${i}&category=${filterby}`}>
+                        <MDBPageItem active={this.state.currentpage === i ? true : false}>
+                            <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${i}&category=${filterby}`}>
                                 {i}
-                            </PaginationLink>
-                        </PaginationItem>
+                            </MDBPageNav>
+                        </MDBPageItem>
                     </div>
                     )
 
@@ -245,21 +245,30 @@ export default class searchResult extends Component {
                                 {this.renderResultsearch()}
                             </div>
                             <div className="pagination d-flex justify-content-center pb-5">
-                                <Pagination aria-label="Page navigation example">
-                                    <PaginationItem disabled={currentpage === 1 ? true : false}>
-                                        <PaginationLink first href={`${URL}search_result?keyword=${search.keyword}&page=${1}&category=${filterby}`} />
-                                    </PaginationItem>
-                                    <PaginationItem disabled={currentpage === 1 ? true : false}>
-                                        <PaginationLink previous href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) - 1}&category=${filterby}`} />
-                                    </PaginationItem>
+                                <MDBPagination circle color='teal'>
+                                    <MDBPageItem disabled={currentpage === 1 ? true : false}>
+                                        <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${1}&category=${filterby}`} >
+                                            <span>first</span>
+                                        </MDBPageNav>
+                                    </MDBPageItem>
+                                    <MDBPageItem disabled={currentpage === 1 ? true : false}>
+                                        <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) - 1}&category=${filterby}`} >
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span className="sr-only">Previous</span>
+                                        </MDBPageNav>
+                                    </MDBPageItem>
                                     {this.renderPagination()}
-                                    <PaginationItem disabled={currentpage === lastitem ? true : false}>
-                                        <PaginationLink next href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) + 1}&category=${filterby}`} />
-                                    </PaginationItem>
-                                    <PaginationItem disabled={currentpage === lastitem ? true : false}>
-                                        <PaginationLink last href={`${URL}search_result?keyword=${search.keyword}&page=${lastitem}&category=${filterby}`} />
-                                    </PaginationItem>
-                                </Pagination>
+                                    <MDBPageItem disabled={currentpage === lastitem ? true : false}>
+                                        <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${parseInt(search.page) + 1}&category=${filterby}`} >
+                                            &raquo;
+                                        </MDBPageNav>
+                                    </MDBPageItem>
+                                    <MDBPageItem disabled={currentpage === lastitem ? true : false}>
+                                        <MDBPageNav href={`${URL}search_result?keyword=${search.keyword}&page=${lastitem}&category=${filterby}`} >
+                                            <span>last</span>
+                                        </MDBPageNav>
+                                    </MDBPageItem>
+                                </MDBPagination>
                             </div>
                         </div>
                         : <div className="text-center mx-auto w-100 font-weight-bold" style={{ color: 'grey', fontSize: '20px' }}>Product not found<br />
