@@ -4,7 +4,7 @@ import Footer from '../components/footer'
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
 import { MdRestaurant } from 'react-icons/md'
 import Axios from "axios"
-import { Input } from 'reactstrap'
+import { Input, Popover, Button, PopoverHeader, PopoverBody } from 'reactstrap'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import Header from '../components/mainheader'
@@ -16,11 +16,9 @@ import { Open_Login, Open_Register, PembeliRegister } from '../redux/action'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
 import Toast from 'light-toast'
-import Pagination from '../components/pagination'
-// import Loadingspinner from 'react-spinners/PulseLoader'
-// import querystring from 'query-string'
 import { MDBIcon } from "mdbreact";
-
+import InputRange from 'react-input-range';
+import 'react-input-range/lib/css/index.css'
 
 
 class Home extends Component {
@@ -32,7 +30,13 @@ class Home extends Component {
         totalPages: null,
         searchfield: '',
         filterby: 'All Category',
-        category: []
+        category: [],
+        popoverOpen: false,
+        value: 2
+    }
+
+    toggle = () => {
+        this.setState({ popoverOpen: !this.state.popoverOpen })
     }
 
     // COMPONENTDIDMOUNT
@@ -49,6 +53,7 @@ class Home extends Component {
             .then(res => this.setState({ category: res.data }))
             .catch((err) => { console.log(err) })
     }
+
 
     // ADD TO WISHLIST
     // ==============
@@ -236,6 +241,7 @@ class Home extends Component {
 
                 <div data-aos="fade-up" className="section4 p-5 mx-5" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     <p data-aos="fade-up" className="allpromos text-center">All Promos Item</p>
+
                     <div className=" w-75 d-flex mx-auto mb-5" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
                         <div style={{ width: '30%' }}>
                             <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: e.target.value })}>
@@ -258,7 +264,29 @@ class Home extends Component {
                             </a>
                         </div>
                     </div>
-                    <div data-aos="fade-up" className="row  gallery" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+
+                    <div className="section-sort d-flex " style={{ paddingLeft: "3%", paddingRight: "3%" }}>
+                        <div className="priceonly mr-auto pl-2">
+                            <Button className="btn btn-grey" size='sm' id="price" >
+                                {'Rp.0.00 - Rp.500.000'}
+                            </Button>
+                        </div>
+                        <Popover placement="top" isOpen={this.state.popoverOpen} target="price" toggle={this.toggle}>
+                            <PopoverBody>Sed posuere .
+                                <InputRange
+                                    maxValue={20}
+                                    minValue={0}
+                                    value={this.state.value}
+                                    onChange={value => this.setState({ value })} />
+                            </PopoverBody>
+                        </Popover>
+                        <div className="filter-option ml-auto pr-2">
+                            <Button className="btn btn-grey" size='sm' id="filterOption" >
+                                Sort By
+                        </Button>
+                        </div>
+                    </div>
+                    <div data-aos="fade-up" className="row gallery" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                         {this.renderallproduct()}
                     </div>
                 </div >

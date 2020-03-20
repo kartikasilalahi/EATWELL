@@ -559,6 +559,14 @@ figure.effect-winston:hover p a:first-child i {
 	font-family: 'Solway', sans-serif;
 }
 
+.section-sort Button,
+.section-sort Button:hover{
+	background-color: whitesmoke !important;
+	border: none;
+	color:black !important;
+	box-shadow:none;
+
+}
 
 
 /* ===================================================================
