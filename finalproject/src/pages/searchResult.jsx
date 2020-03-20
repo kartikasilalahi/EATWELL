@@ -12,6 +12,8 @@ import { MDBIcon } from "mdbreact";
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
 import { Input, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 import Header from '../components/mainheader'
+import Loadingspinner from 'react-spinners/PulseLoader'
+
 // import Toast from 'light-toast'
 // import AOS from 'aos'
 
@@ -23,7 +25,7 @@ export default class searchResult extends Component {
         newsearchfield: '',
         newfilterby: 'All Category',
         listcategory: [],
-        allproduct: [],
+        allproduct: null,
         jumlahProduk: 0,
         currentpage: 0,
     }
@@ -193,12 +195,17 @@ export default class searchResult extends Component {
     }
 
     render() {
-        // console.log('INIIIIII', this.state.jumlahProduk)
-        let { filterby, searchfield, currentpage, jumlahProduk, newfilterby, newsearchfield } = this.state
+        let { allproduct, filterby, searchfield, currentpage, jumlahProduk, newfilterby, newsearchfield } = this.state
         let search = queryString.parse(this.props.location.search)
         let lastitem = Math.ceil(jumlahProduk / 12)
 
-
+        if (allproduct === null) {
+            return <Loadingspinner
+                size={8}
+                color={"#31332F"}
+                margin={2}
+            />
+        }
         return (
             <div>
                 <div style={{ height: '75px', backgroundColor: 'black' }}><Header /></div>
@@ -227,13 +234,13 @@ export default class searchResult extends Component {
                     </div>
                 </div>
 
+                <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
+                    <h6>Search results for '{searchfield}' with the category '{filterby}'</h6>
+                    <h6>Result ({jumlahProduk} Products)</h6>
+                </div>
                 {
                     jumlahProduk ?
                         <div>
-                            <div className="jumlahprod" style={{ paddingLeft: "10%", paddingRight: "10%", color: 'gray' }}>
-                                <h6>Search results for '{searchfield}' with the category '{filterby}'</h6>
-                                <h6>Result ({jumlahProduk} Products)</h6>
-                            </div>
                             <div className="row gallery px-5 mx-5 my-1" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                                 {this.renderResultsearch()}
                             </div>
@@ -255,12 +262,9 @@ export default class searchResult extends Component {
                                 </Pagination>
                             </div>
                         </div>
-                        // : <h5 style={{ color: 'gray', textAlign: "center" }}> There is no product you want </h5>
                         : <div className="text-center mx-auto w-100 font-weight-bold" style={{ color: 'grey', fontSize: '20px' }}>Product not found<br />
                         Please try other or more general keywords :)</div>
                 }
-
-
             </div >
         )
     }
