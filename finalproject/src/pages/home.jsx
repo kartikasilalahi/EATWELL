@@ -31,17 +31,19 @@ class Home extends Component {
         searchfield: '',
         filterby: 'All Category',
         category: [],
+        range: false,
         popoverOpenPrice: false,
         popoverOpenOption: false,
-        value: 2,
+        value: 3,
         rangeprice: {
-            min: 5,
-            max: 15
+            min: 0,
+            max: 500000
         }
     }
 
     // COMPONENTDIDMOUNT
     componentDidMount() {
+        let { range, rangeprice } = this.state
         AOS.init({ duration: 1000 })
         Axios.get(`${APIURL}produk/dataprod`)
             .then((res) => this.setState({
@@ -53,6 +55,11 @@ class Home extends Component {
         Axios.get(`${APIURL}produk/kategoriproduk`)
             .then(res => this.setState({ category: res.data }))
             .catch((err) => { console.log(err) })
+        if (range) {
+            Axios.get(`${APIURL}produk/range-price?max=${rangeprice.max}&min=${rangeprice.min}`)
+                .then(res => this.setState({ category: res.data }))
+                .catch((err) => { console.log(err) })
+        }
     }
 
 
@@ -140,102 +147,122 @@ class Home extends Component {
         })
     }
 
-
     // RENDER GALLERY 
     // ===============
     renderallproduct = () => {
-        const { dataProduk } = this.state
-        return dataProduk.map((val, index) => {
-            const discount = dataProduk[index].diskon
-            const harganormal = dataProduk[index].harganormal
-            const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
+        const { dataProduk, range, rangeprice } = this.state
+        console.log('range', range)
+        console.log('range max', rangeprice.max)
+
+        if (range) {
+            // Axios.get(`${APIURL}produk/range-price?max=${rangeprice.max}&min=${rangeprice.min}`)
+            //     .then(res => this.setState({ category: res.data }))
+            //     .catch((err) => { console.log(err) })
             return (
-                <Fade key={index} bottom cascade>
-                    <div key={index} className="grid">
-                        <figure className="effect-winston">
-                            <img src={`${APIURLimagetoko}` + val.image} alt="image" />
-                            <button className="btn mx-auto p-0"
-                                style={
-                                    {
-                                        zIndex: 1,
-                                        cursor: 'text',
-                                        position: "absolute",
-                                        top: -6,
-                                        right: 0,
-                                        borderRadius: "0px 0px 0px 30px",
-                                        fontSize: "18px",
-                                        fontWeight: "bolder",
-                                        lineHeight: '17px',
-                                        height: "14%",
-                                        width: "23%",
-                                        color: "black",
-                                        backgroundColor: "#ADFF2F"
-                                    }
-                                }> {discount}%
-                                    </button>
-                            <figcaption>
-                                <h5>{val.namakategori}</h5>
-                                <h4>{val.namaproduk} - {hargadiskon}</h4>
-                                <h6> <MdRestaurant />{val.namatoko}</h6>
-                                <p>
-                                    <Link to={'/detailproduk/' + val.id}>
-                                        <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
-                                            <i className="fa fa-shopping-cart" ></i>
-                                        </Tooltip>
-                                    </Link>
-                                    {
-                                        this.props.roleid === 1 ?
-                                            <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
-                                                <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
-                                            </Tooltip> :
-                                            <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
-                                                <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
-                                            </Tooltip>
-                                    }
-                                </p>
-                            </figcaption>
-                        </figure>
-                    </div>
-                </Fade>
+                <div>
+                    adks
+                </div>
             )
-        })
+        }
+        else {
+            return dataProduk.map((val, index) => {
+                const discount = dataProduk[index].diskon
+                const harganormal = dataProduk[index].harganormal
+                const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
+                return (
+                    <Fade key={index} bottom cascade>
+                        <div key={index} className="grid">
+                            <figure className="effect-winston">
+                                <img src={`${APIURLimagetoko}` + val.image} alt="image" />
+                                <button className="btn mx-auto p-0"
+                                    style={
+                                        {
+                                            zIndex: 1,
+                                            cursor: 'text',
+                                            position: "absolute",
+                                            top: -6,
+                                            right: 0,
+                                            borderRadius: "0px 0px 0px 30px",
+                                            fontSize: "18px",
+                                            fontWeight: "bolder",
+                                            lineHeight: '17px',
+                                            height: "14%",
+                                            width: "23%",
+                                            color: "black",
+                                            backgroundColor: "#ADFF2F"
+                                        }
+                                    }> {discount}%
+                                    </button>
+                                <figcaption>
+                                    <h5>{val.namakategori}</h5>
+                                    <h4>{val.namaproduk} - {hargadiskon}</h4>
+                                    <h6> <MdRestaurant />{val.namatoko}</h6>
+                                    <p>
+                                        <Link to={'/detailproduk/' + val.id}>
+                                            <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
+                                                <i className="fa fa-shopping-cart" ></i>
+                                            </Tooltip>
+                                        </Link>
+                                        {
+                                            this.props.roleid === 1 ?
+                                                <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
+                                                    <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
+                                                </Tooltip> :
+                                                <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
+                                                    <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
+                                                </Tooltip>
+                                        }
+                                    </p>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </Fade>
+                )
+            })
+        }
     }
 
 
     render() {
         let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, value } = this.state
-        console.log(filterby)
         return (
             <div className="homepage">
                 <Header />
-                {/* popver range price */}
+                {/* -- popver range price -- */}
                 <Popover placement="bottom" isOpen={popoverOpenPrice} target="price" toggle={() => this.setState({ popoverOpenPrice: !popoverOpenPrice })
                 }>
                     <PopoverBody>
-                        <InputRange
-                            maxValue={20}
-                            minValue={0}
-                            value={value}
-                            onChange={value => this.setState({ value })}
-                            onChangeComplete={value => console.log(value)} />
+                        <div className="mt-4">
+                            <InputRange
+                                draggableTrack
+                                step={20000}
+                                maxValue={20}
+                                minValue={0}
+                                onChange={value => this.setState({ rangeprice: value })}
+                                onChangeComplete={value => console.log('itu', value)}
+                                value={this.state.rangeprice} />
+                        </div>
+                        <div className='btnpopover d-flex justify-content-between'>
+                            <Tooltip TransitionComponent={Zoom} title="cancel" arrow placement="top">
+                                <img src={require('./images/icons/error.png')} height='25px'
+                                    onClick={() => { this.setState({ popoverOpenPrice: !popoverOpenPrice }) }} />
+                            </Tooltip>
 
-                        <InputRange
-                            draggableTrack
-                            maxValue={20}
-                            minValue={0}
-                            onChange={value => this.setState({ rangeprice: value })}
-                            onChangeComplete={value => console.log(value)}
-                            value={this.state.rangeprice} />
+                            <Tooltip TransitionComponent={Zoom} title="reset" arrow placement="top">
+                                <img src={require('./images/icons/reset.png')} height='25px'
+                                    onClick={() => { this.setState({ range: false, popoverOpenPrice: !popoverOpenPrice }) }} />
+                            </Tooltip>
 
-                        <div className='d-flex justify-content-between'>
-                            <Button onClick={() => { this.setState({ popoverOpenPrice: !popoverOpenPrice }) }
-                            } size='sm' className="py-1 btn btn-grey">x</Button>
-                            <Button size='sm' className="py-1 btn btn-grey">ok</Button>
+                            <Tooltip TransitionComponent={Zoom} title="apply!" arrow placement="top">
+                                <img src={require('./images/icons/yes.png')} height='25px'
+                                    onClick={() => { this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice }) }} />
+                            </Tooltip>
+
                         </div>
                     </PopoverBody>
                 </Popover>
 
-                {/* popover filter option */}
+                {/* -- popover filter option -- */}
                 <Popover placement="bottom" isOpen={popoverOpenOption} target="filterOption" toggle={() => this.setState({ popoverOpenOption: !popoverOpenOption })}>
                     <PopoverBody>
                         <div className='d-flex justify-content-between'>
@@ -279,7 +306,7 @@ class Home extends Component {
                 <div data-aos="fade-up" className="section4 p-5 mx-5" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                     <p data-aos="fade-up" className="allpromos text-center">All Promos Item</p>
 
-                    {/* search box */}
+                    {/* -- search box -- */}
                     <div className=" w-75 d-flex mx-auto mb-5" style={{ paddingRight: '12%', paddingLeft: '12%' }}>
                         <div style={{ width: '30%' }}>
                             <Input style={{ backgroundColor: 'whitesmoke' }} type='select' onChange={(e) => this.setState({ filterby: e.target.value })}>
@@ -304,14 +331,14 @@ class Home extends Component {
                     </div>
 
                     <div className="section-sort d-flex " style={{ paddingLeft: "3%", paddingRight: "3%" }}>
-                        {/* filter by price only */}
+                        {/* -- filter by price only -- */}
                         <div className="priceonly mr-auto pl-2">
                             <Button className="btn btn-grey" size='sm' id="price" >
                                 {'Rp.0.00 - Rp.500.000'}
                             </Button>
                         </div>
 
-                        {/* filter by many options */}
+                        {/* -- filter by many options -- */}
                         <div className="filter-option ml-auto pr-2">
                             <Button className="btn btn-grey" size='sm' id="filterOption" >
                                 Sort By

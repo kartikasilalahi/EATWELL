@@ -468,15 +468,13 @@ module.exports = {
     searchProduct: (req, res) => {
         let now = moment().format("YYYY-MM-DD")
         let { keyword, page, category } = req.query
-        var offset = (page * 12) - 12//2 karena 1 page a=hanya 2 product ini nanti diganti
+        var offset = (page * 12) - 12
         if (!page) {
             offset = 0
         }
         if (!keyword) {
             keyword = ''
         }
-        // let sql = ''
-        // if (category == 'All Category') {
         let sql = `SELECT 
                     p.id, 
                     p.namaproduk, 
@@ -490,7 +488,6 @@ module.exports = {
                 produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
                 LEFT JOIN images i ON p.id=i.idproduk WHERE  p.namaproduk LIKE '%${keyword}%' AND i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC limit ${offset},12;`
-        // }
         if (category !== 'All Category') {
             sql = `SELECT 
                     p.id, 
@@ -509,7 +506,6 @@ module.exports = {
 
         mysql.query(sql, (err, result) => {
             if (err) return res.status(500).send(err)
-            // return res.status(200).send(result)
             sql = `SELECT count(*) AS jumlah FROM produk WHERE namaproduk LIKE '%${keyword}%' AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}'`
             if (category !== 'All Category') {
                 sql = `SELECT count(*) AS jumlah 
@@ -523,6 +519,32 @@ module.exports = {
                 if (err1) return res.status(500).send(err1)
                 return res.status(200).send({ produk: result, produklength: result.length, jumlahprod: result1[0] })
             })
+        })
+    },
+
+    getProductbyPrice: (req, res) => {
+        let { min, max } = req.query
+        let sql = `SELECT 
+                    p.id, 
+                    p.namaproduk, 
+                    p.harganormal, 
+                    p.diskon, 
+                    p.harganormal-(p.harganormal*p.diskon/100) as hargadisc,
+                    p.kuota,
+                    p.terjual,
+                    kp.namakategori,
+                    t.namatoko,
+                    i.image FROM 
+                produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                LEFT JOIN toko t ON p.idtoko = t.usertokoid
+                LEFT JOIN images i ON p.id=i.idproduk 
+                WHERE i.cover=1 AND tanggalakhir > '2020-03-18' 
+                AND tanggalmulai <= '2020-03-18' 
+                AND p.harganormal-(p.harganormal*p.diskon/100) between ${min} AND ${max} 
+                ORDER BY p.harganormal-(p.harganormal*p.diskon/100) ASC`
+        mysql.query(sql, (err, result) => {
+            if (err) return res.status(500).send(err)
+            return res.status(200).send(result)
         })
     }
 }

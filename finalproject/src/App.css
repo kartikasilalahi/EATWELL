@@ -572,7 +572,21 @@ figure.effect-winston:hover p a:first-child i {
 	width: 200px !important;
 }
 
+.btnpopover img{
+	cursor: pointer;
+}
 
+.input-range__label-container{
+	color: black !important;
+}
+.input-range__track .input-range__track--active{
+	background: green;
+}
+
+.input-range__slider{
+	background: green !important;
+	border-color: green !;
+}
 
 /* ===================================================================
  * # testimonials - (_site-layout.scss)
