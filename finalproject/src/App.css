@@ -561,7 +561,7 @@ figure.effect-winston:hover p a:first-child i {
 
 .section-sort Button,
 .section-sort Button:hover{
-	background-color: whitesmoke !important;
+	background-color: rgb(218, 216, 216) !important;
 	border: none;
 	color:black !important;
 	box-shadow:none;
@@ -586,6 +586,20 @@ figure.effect-winston:hover p a:first-child i {
 .input-range__slider{
 	background: green !important;
 	border-color: green !;
+}
+
+.filteropt{
+	background-color: whitesmoke;
+}
+
+.filteroption{
+	cursor: pointer;
+	font-size: small;
+	padding: 4px;
+}
+.filteroption:hover{
+	background-color: rgb(155, 215, 155);
+	color: black;
 }
 
 /* ===================================================================

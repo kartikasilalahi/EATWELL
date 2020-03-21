@@ -14,6 +14,7 @@ module.exports = {
                     p.namaproduk, 
                     p.harganormal, 
                     p.diskon,  
+                    p.harganormal-(p.harganormal*p.diskon/100) as hargadisc,
                     p.kuota,
                     p.terjual,
                     kp.namakategori,
@@ -580,7 +581,7 @@ module.exports = {
 
                 mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)*2) as maxprice FROM produk`, (err1, res1) => {
                     if (err1) return res.status(500).send(err1);
-                    return res.status(200).send({ dataproduk: result, max: res1 }); // ==== dataproduk DISINI  HARUS SAMA di front end ===== 
+                    return res.status(200).send({ dataproduk: result, max: res1 });
                 })
 
             })

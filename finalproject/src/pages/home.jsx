@@ -32,9 +32,10 @@ class Home extends Component {
         filterby: 'All Category',
         category: [],
         range: false,
+        option: 'Sort By',
+        opt: false,
         popoverOpenPrice: false,
         popoverOpenOption: false,
-        max: 0,
         rangeprice: {
             min: 0,
             max: 0
@@ -130,13 +131,41 @@ class Home extends Component {
     // RENDER GALLERY 
     // ===============
     renderallproduct = () => {
-        const { dataProduk, range, rangeprice } = this.state
+        const { dataProduk, range, rangeprice, option, opt } = this.state
+        console.log(opt)
+        console.log(option)
         let datapro = []
-        if (range) {
-            datapro = dataProduk.filter((val, i) => val.harganormal - (val.harganormal * val.diskon / 100) >= rangeprice.min && val.harganormal - (val.harganormal * val.diskon / 100) <= rangeprice.max)
-        } else {
+
+        if (range === false || opt === false) {
             datapro = dataProduk
         }
+        else if (range) {
+            datapro = dataProduk.filter((val, i) => val.harganormal - (val.harganormal * val.diskon / 100) >= rangeprice.min && val.harganormal - (val.harganormal * val.diskon / 100) <= rangeprice.max)
+        }
+
+
+        if (opt) {
+            console.log(option)
+            if (option === 'discount') {
+                dataProduk.sort((a, b) => {
+                    return b.diskon - a.diskon
+                })
+                datapro = dataProduk
+            } else if (option === 'highest-price') {
+                dataProduk.sort((a, b) => {
+                    console.log('MASUK')
+                    return b.hargadisc - a.hargadisc
+                })
+                datapro = dataProduk
+            } else if (option === 'lowest-price') {
+                dataProduk.sort((a, b) => {
+                    return a.hargadisc - b.hargadisc
+                })
+                datapro = dataProduk
+            }
+        }
+
+        console.log(datapro)
         return datapro.map((val, index) => {
             const discount = datapro[index].diskon
             const harganormal = datapro[index].harganormal
@@ -195,9 +224,7 @@ class Home extends Component {
 
 
     render() {
-        let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, max, rangeprice } = this.state
-        console.log(max)
-        console.log(rangeprice)
+        let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, max, rangeprice, option, opt } = this.state
         return (
             <div className="homepage">
                 <Header />
@@ -220,17 +247,14 @@ class Home extends Component {
                                 <img src={require('./images/icons/error.png')} height='25px'
                                     onClick={() => { this.setState({ popoverOpenPrice: !popoverOpenPrice }) }} />
                             </Tooltip>
-
                             <Tooltip TransitionComponent={Zoom} title="reset" arrow placement="top">
                                 <img src={require('./images/icons/reset.png')} height='25px'
-                                    onClick={() => { this.setState({ range: false, popoverOpenPrice: !popoverOpenPrice, rangeprice: { max: 0, min: 0 } }) }} />
+                                    onClick={() => { this.setState({ opt: false, range: false, popoverOpenPrice: !popoverOpenPrice, rangeprice: { max: 0, min: 0 } }) }} />
                             </Tooltip>
-
                             <Tooltip TransitionComponent={Zoom} title="apply!" arrow placement="top">
                                 <img src={require('./images/icons/yes.png')} height='25px'
-                                    onClick={() => this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice })} />
+                                    onClick={() => this.setState({ opt: false, range: true, popoverOpenPrice: !popoverOpenPrice })} />
                             </Tooltip>
-
                         </div>
                     </PopoverBody>
                 </Popover>
@@ -238,9 +262,14 @@ class Home extends Component {
                 {/* -- popover filter option -- */}
                 <Popover placement="bottom" isOpen={popoverOpenOption} target="filterOption" toggle={() => this.setState({ popoverOpenOption: !popoverOpenOption })}>
                     <PopoverBody>
-                        <div className='d-flex justify-content-between'>
-                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption })} size='sm' className="py-1 btn btn-grey">x</Button>
-                            <Button size='sm' className="py-1 btn btn-grey">ok</Button>
+                        <div className='p-2 filteropt'>
+                            <div onClick={() => this.setState({ option: 'highest-price', opt: true, range: false, rangeprice: { max: 0, min: 0 } })} className='filteroption'>Highest Price</div>
+                            <div onClick={() => this.setState({ option: 'lowest-price', opt: true, range: false, rangeprice: { max: 0, min: 0 } })} className='filteroption'>Lowest Prize</div>
+                            <div onClick={() => this.setState({ option: 'discount', opt: true, range: false, rangeprice: { max: 0, min: 0 } })} className='filteroption'>Discount</div>
+                        </div>
+                        <div className='d-flex justify-content-between px-2 py-1'>
+                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, option: 'Sort By', opt: false })} size='sm' className="btn btn-grey py-1">reset</Button>
+                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, opt: false, range: false, rangeprice: { max: 0, min: 0 } })} size='sm' className="btn btn-grey py-1">ok</Button>
                         </div>
                     </PopoverBody>
                 </Popover>
@@ -317,8 +346,10 @@ class Home extends Component {
                         {/* -- filter by many options -- */}
                         <div className="filter-option ml-auto pr-2">
                             <Button className="btn btn-grey" size='sm' id="filterOption" >
-                                Sort By
-                        </Button>
+                                {
+                                    option ? `${option}` : 'Sort By'
+                                }
+                            </Button>
                         </div>
                     </div>
                     <div data-aos="fade-up" className="row gallery" style={{ paddingLeft: "3%", paddingRight: "3%" }}>
@@ -347,23 +378,3 @@ const MapStateToProps = (state) => {
 }
 
 export default connect(MapStateToProps, { Open_Login, Open_Register, PembeliRegister })(Home);
-
-
-
-/*
-    ok = () => {
-        let { popoverOpenPrice, rangeprice, range } = this.state
-        this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice })
-        Axios.get(`${APIURL}produk/range-price?max=${rangeprice.max}&min=${rangeprice.min}&range=true`)
-            .then(res => {
-                console.log(res.data)
-                this.setState({
-                    dataProduk: res.data.dataproduk,
-                    max: res.data.max[0].maxprice
-                    // specialProduk: res.data.dataproduk.filter((val, index) => val.diskon >= 40)
-                })
-            })
-            .catch((err) => { console.log(err) })
-
-    }
-*/
