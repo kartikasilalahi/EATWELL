@@ -34,20 +34,20 @@ class Home extends Component {
         range: false,
         popoverOpenPrice: false,
         popoverOpenOption: false,
-        value: 3,
+        max: 0,
         rangeprice: {
             min: 0,
-            max: 500000
+            max: 0
         }
     }
 
     // COMPONENTDIDMOUNT
     componentDidMount() {
-        let { range, rangeprice } = this.state
         AOS.init({ duration: 1000 })
         Axios.get(`${APIURL}produk/dataprod`)
             .then((res) => this.setState({
                 dataProduk: res.data.dataproduk,
+                max: res.data.max[0].maxprice,
                 specialProduk: res.data.dataproduk.filter((val, index) => val.diskon >= 40)
             }))
             .catch((err) => console.log(err))
@@ -55,11 +55,7 @@ class Home extends Component {
         Axios.get(`${APIURL}produk/kategoriproduk`)
             .then(res => this.setState({ category: res.data }))
             .catch((err) => { console.log(err) })
-        if (range) {
-            Axios.get(`${APIURL}produk/range-price?max=${rangeprice.max}&min=${rangeprice.min}`)
-                .then(res => this.setState({ category: res.data }))
-                .catch((err) => { console.log(err) })
-        }
+
     }
 
 
@@ -71,7 +67,6 @@ class Home extends Component {
         let datawishlist = {
             idproduk, iduser
         }
-        console.log(datawishlist)
         Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
             .then(() => {
                 Toast.loading(`Add to Wishlist. Please wait a moment`);
@@ -94,21 +89,6 @@ class Home extends Component {
             })
         }
     }
-
-    // ON PAGE CHANGE
-    // ==============
-    onPageChanged = data => {
-        console.log('DATAAA', data)
-        console.log('brp pages', data.totalPages)
-        const { dataProduk } = this.state;
-        const { currentPage, totalPages, pageLimit } = data;
-
-        const offset = (currentPage - 1) * pageLimit;
-        const currentProduk = dataProduk.slice(offset, offset + pageLimit);
-
-        this.setState({ currentPage, currentProduk, totalPages });
-    };
-
 
     // RENDER SPECIAL PRODUK
     // =====================
@@ -151,80 +131,73 @@ class Home extends Component {
     // ===============
     renderallproduct = () => {
         const { dataProduk, range, rangeprice } = this.state
-        console.log('range', range)
-        console.log('range max', rangeprice.max)
-
+        let datapro = []
         if (range) {
-            // Axios.get(`${APIURL}produk/range-price?max=${rangeprice.max}&min=${rangeprice.min}`)
-            //     .then(res => this.setState({ category: res.data }))
-            //     .catch((err) => { console.log(err) })
+            datapro = dataProduk.filter((val, i) => val.harganormal - (val.harganormal * val.diskon / 100) >= rangeprice.min && val.harganormal - (val.harganormal * val.diskon / 100) <= rangeprice.max)
+        } else {
+            datapro = dataProduk
+        }
+        return datapro.map((val, index) => {
+            const discount = datapro[index].diskon
+            const harganormal = datapro[index].harganormal
+            const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
             return (
-                <div>
-                    adks
-                </div>
-            )
-        }
-        else {
-            return dataProduk.map((val, index) => {
-                const discount = dataProduk[index].diskon
-                const harganormal = dataProduk[index].harganormal
-                const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
-                return (
-                    <Fade key={index} bottom cascade>
-                        <div key={index} className="grid">
-                            <figure className="effect-winston">
-                                <img src={`${APIURLimagetoko}` + val.image} alt="image" />
-                                <button className="btn mx-auto p-0"
-                                    style={
-                                        {
-                                            zIndex: 1,
-                                            cursor: 'text',
-                                            position: "absolute",
-                                            top: -6,
-                                            right: 0,
-                                            borderRadius: "0px 0px 0px 30px",
-                                            fontSize: "18px",
-                                            fontWeight: "bolder",
-                                            lineHeight: '17px',
-                                            height: "14%",
-                                            width: "23%",
-                                            color: "black",
-                                            backgroundColor: "#ADFF2F"
-                                        }
-                                    }> {discount}%
+                <Fade key={index} bottom cascade>
+                    <div key={index} className="grid">
+                        <figure className="effect-winston">
+                            <img src={`${APIURLimagetoko}` + val.image} alt="image" />
+                            <button className="btn mx-auto p-0"
+                                style={
+                                    {
+                                        zIndex: 1,
+                                        cursor: 'text',
+                                        position: "absolute",
+                                        top: -6,
+                                        right: 0,
+                                        borderRadius: "0px 0px 0px 30px",
+                                        fontSize: "18px",
+                                        fontWeight: "bolder",
+                                        lineHeight: '17px',
+                                        height: "14%",
+                                        width: "23%",
+                                        color: "black",
+                                        backgroundColor: "#ADFF2F"
+                                    }
+                                }>{discount}%
                                     </button>
-                                <figcaption>
-                                    <h5>{val.namakategori}</h5>
-                                    <h4>{val.namaproduk} - {hargadiskon}</h4>
-                                    <h6> <MdRestaurant />{val.namatoko}</h6>
-                                    <p>
-                                        <Link to={'/detailproduk/' + val.id}>
-                                            <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
-                                                <i className="fa fa-shopping-cart" ></i>
+                            <figcaption>
+                                <h5>{val.namakategori}</h5>
+                                <h4>{val.namaproduk} - {hargadiskon}</h4>
+                                <h6> <MdRestaurant />{val.namatoko}</h6>
+                                <p>
+                                    <Link to={'/detailproduk/' + val.id}>
+                                        <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
+                                            <i className="fa fa-shopping-cart" ></i>
+                                        </Tooltip>
+                                    </Link>
+                                    {
+                                        this.props.roleid === 1 ?
+                                            <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
+                                                <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
+                                            </Tooltip> :
+                                            <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
+                                                <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
                                             </Tooltip>
-                                        </Link>
-                                        {
-                                            this.props.roleid === 1 ?
-                                                <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
-                                                    <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
-                                                </Tooltip> :
-                                                <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
-                                                    <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
-                                                </Tooltip>
-                                        }
-                                    </p>
-                                </figcaption>
-                            </figure>
-                        </div>
-                    </Fade>
-                )
-            })
-        }
+                                    }
+                                </p>
+                            </figcaption>
+                        </figure>
+                    </div>
+                </Fade>
+            )
+        })
     }
 
 
     render() {
-        let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, value } = this.state
+        let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, max, rangeprice } = this.state
+        console.log(max)
+        console.log(rangeprice)
         return (
             <div className="homepage">
                 <Header />
@@ -232,11 +205,11 @@ class Home extends Component {
                 <Popover placement="bottom" isOpen={popoverOpenPrice} target="price" toggle={() => this.setState({ popoverOpenPrice: !popoverOpenPrice })
                 }>
                     <PopoverBody>
-                        <div className="mt-4">
+                        <div className="mt-4 p-4">
                             <InputRange
                                 draggableTrack
-                                step={20000}
-                                maxValue={20}
+                                step={5000}
+                                maxValue={max}
                                 minValue={0}
                                 onChange={value => this.setState({ rangeprice: value })}
                                 onChangeComplete={value => console.log('itu', value)}
@@ -250,12 +223,12 @@ class Home extends Component {
 
                             <Tooltip TransitionComponent={Zoom} title="reset" arrow placement="top">
                                 <img src={require('./images/icons/reset.png')} height='25px'
-                                    onClick={() => { this.setState({ range: false, popoverOpenPrice: !popoverOpenPrice }) }} />
+                                    onClick={() => { this.setState({ range: false, popoverOpenPrice: !popoverOpenPrice, rangeprice: { max: 0, min: 0 } }) }} />
                             </Tooltip>
 
                             <Tooltip TransitionComponent={Zoom} title="apply!" arrow placement="top">
                                 <img src={require('./images/icons/yes.png')} height='25px'
-                                    onClick={() => { this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice }) }} />
+                                    onClick={() => this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice })} />
                             </Tooltip>
 
                         </div>
@@ -334,7 +307,10 @@ class Home extends Component {
                         {/* -- filter by price only -- */}
                         <div className="priceonly mr-auto pl-2">
                             <Button className="btn btn-grey" size='sm' id="price" >
-                                {'Rp.0.00 - Rp.500.000'}
+                                {
+                                    rangeprice.min == 0 && rangeprice.max == 0 ? 'All Price' :
+                                        `${rangeprice.min}- ${rangeprice.max}`
+                                }
                             </Button>
                         </div>
 
@@ -371,3 +347,23 @@ const MapStateToProps = (state) => {
 }
 
 export default connect(MapStateToProps, { Open_Login, Open_Register, PembeliRegister })(Home);
+
+
+
+/*
+    ok = () => {
+        let { popoverOpenPrice, rangeprice, range } = this.state
+        this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice })
+        Axios.get(`${APIURL}produk/range-price?max=${rangeprice.max}&min=${rangeprice.min}&range=true`)
+            .then(res => {
+                console.log(res.data)
+                this.setState({
+                    dataProduk: res.data.dataproduk,
+                    max: res.data.max[0].maxprice
+                    // specialProduk: res.data.dataproduk.filter((val, index) => val.diskon >= 40)
+                })
+            })
+            .catch((err) => { console.log(err) })
+
+    }
+*/

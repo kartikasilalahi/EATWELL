@@ -24,7 +24,12 @@ module.exports = {
                 LEFT JOIN images i ON p.id=i.idproduk WHERE i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC`
         mysql.query(sql, (err, result) => {
             if (err) return res.status(500).send(err);
-            return res.status(200).send({ dataproduk: result }); // ==== dataproduk DISINI  HARUS SAMA di front end ===== 
+
+            mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)*2) as maxprice FROM produk`, (err1, res1) => {
+                if (err1) return res.status(500).send(err1);
+                return res.status(200).send({ dataproduk: result, max: res1 }); // ==== dataproduk DISINI  HARUS SAMA di front end ===== 
+            })
+
         })
     },
 
@@ -523,13 +528,45 @@ module.exports = {
     },
 
     getProductbyPrice: (req, res) => {
-        let { min, max } = req.query
-        let sql = `SELECT 
+        let now = moment().format("YYYY-MM-DD")
+        let { min, max, range } = req.query
+        console.log(min)
+        console.log(max)
+        if (range === true) {
+            console.log('iniii');
+
+            let sql = `SELECT 
+                        p.id, 
+                        p.namaproduk, 
+                        p.harganormal, 
+                        p.diskon, 
+                        p.harganormal-(p.harganormal*p.diskon/100) as hargadisc,
+                        p.kuota,
+                        p.terjual,
+                        kp.namakategori,
+                        t.namatoko,
+                        i.image FROM 
+                    produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
+                    LEFT JOIN toko t ON p.idtoko = t.usertokoid
+                    LEFT JOIN images i ON p.id=i.idproduk 
+                    WHERE i.cover=1 AND tanggalakhir > '${now}' 
+                    AND tanggalmulai <= '${now}' 
+                    AND p.harganormal-(p.harganormal*p.diskon/100) between ${min} AND ${max} 
+                    ORDER BY p.harganormal-(p.harganormal*p.diskon/100) ASC`
+            mysql.query(sql, (err, result) => {
+                if (err) return res.status(500).send(err)
+                mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)*2) as maxprice FROM produk`, (err1, res1) => {
+                    if (err1) return res.status(500).send(err1);
+                    return res.status(200).send({ dataproduk: result, max: res1 })
+                })
+            })
+        } else {
+            console.log('sininnn')
+            sql = `SELECT 
                     p.id, 
                     p.namaproduk, 
                     p.harganormal, 
-                    p.diskon, 
-                    p.harganormal-(p.harganormal*p.diskon/100) as hargadisc,
+                    p.diskon,  
                     p.kuota,
                     p.terjual,
                     kp.namakategori,
@@ -537,14 +574,16 @@ module.exports = {
                     i.image FROM 
                 produk p LEFT JOIN kategoriproduk kp ON p.idkategoriproduk = kp.id
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
-                LEFT JOIN images i ON p.id=i.idproduk 
-                WHERE i.cover=1 AND tanggalakhir > '2020-03-18' 
-                AND tanggalmulai <= '2020-03-18' 
-                AND p.harganormal-(p.harganormal*p.diskon/100) between ${min} AND ${max} 
-                ORDER BY p.harganormal-(p.harganormal*p.diskon/100) ASC`
-        mysql.query(sql, (err, result) => {
-            if (err) return res.status(500).send(err)
-            return res.status(200).send(result)
-        })
+                LEFT JOIN images i ON p.id=i.idproduk WHERE i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC`
+            mysql.query(sql, (err, result) => {
+                if (err) return res.status(500).send(err);
+
+                mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)*2) as maxprice FROM produk`, (err1, res1) => {
+                    if (err1) return res.status(500).send(err1);
+                    return res.status(200).send({ dataproduk: result, max: res1 }); // ==== dataproduk DISINI  HARUS SAMA di front end ===== 
+                })
+
+            })
+        }
     }
 }
