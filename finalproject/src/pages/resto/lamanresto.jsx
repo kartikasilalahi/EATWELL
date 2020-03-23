@@ -13,9 +13,9 @@ import { Redirect } from 'react-router-dom'
 class Lamanmitra extends React.Component {
     render() {
 
-        // if (this.props.roleid !== 2) {
-        //     return <Redirect to={'/notfound'} />
-        // }
+        if (this.props.roleid !== 2) {
+            return <Redirect to={'/notfound'} />
+        }
         return (
             <div>
                 <Header />
