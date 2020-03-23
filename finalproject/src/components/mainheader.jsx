@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import 'mdbreact/dist/css/mdb.css'
 import { Modal, ModalBody } from 'reactstrap'
 import { Carousel } from 'react-responsive-carousel'
-import { Checkbox } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
 import { MDBBtn, MDBInput } from 'mdbreact'
 import Swal from "sweetalert2";
@@ -154,13 +153,6 @@ class Header extends Component {
     }
 
     render() {
-        const { roleid } = this.props
-        if (this.state.logout) return <Redirect to='/' />
-        if (roleid === 2) {
-            return <Redirect to='/lamanmitra' />
-        } else if (roleid === 3) {
-            return <Redirect to='/admin' />
-        }
         return (
             <div>
                 {/* ===== start modal =====*/}
@@ -305,17 +297,31 @@ class Header extends Component {
                                                 </Link>
                                             </ul>
                                         </nav>
-                                    )
-                                    :
-                                    (
-                                        <nav>
-                                            <ul>
-                                                <li><a onClick={this.LoginClick}>Sign In</a></li>
-                                                <li><a href="/help">Help</a></li>
-                                                <li><a href="/join">Join with us</a></li>
-                                            </ul>
-                                        </nav>
-                                    )
+                                    ) :
+                                    this.props.roleid === 3 ?
+                                        (
+                                            <nav>
+                                                <ul>
+                                                    <li><a onClick={this.logoutClick} >Logout</a></li>
+                                                    <Link to={'/admin'}>
+                                                        <button className="btnakun btn-outline-light px-4"
+                                                            style={{ borderRadius: "25px", cursor: "pointer" }}>
+                                                            <span className="akun" >Hi, {this.props.username}</span>
+                                                        </button>
+                                                    </Link>
+                                                </ul>
+                                            </nav>
+                                        )
+                                        :
+                                        (
+                                            <nav>
+                                                <ul>
+                                                    <li><a onClick={this.LoginClick}>Sign In</a></li>
+                                                    <li><a href="/help">Help</a></li>
+                                                    <li><a href="/join">Join with us</a></li>
+                                                </ul>
+                                            </nav>
+                                        )
                         }
                     </div>
                 </div>

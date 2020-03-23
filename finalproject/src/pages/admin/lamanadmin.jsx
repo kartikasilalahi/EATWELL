@@ -1,13 +1,24 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
+import { Redirect } from 'react-router-dom';
 import Alluser from './compadmin/allUser'
 import Allcategory from './compadmin/manageCategory'
 import Allschedule from './compadmin/manageSchedules'
 import Alltransaction from './compadmin/allTransaction'
-
-
 import Header from '../../components/header'
 function Lamanadmin() {
+    const State = useSelector(({ authReducer }) => {
+        return {
+            // id: authReducer.id,
+            roleid: authReducer.roleid
+            // username: authReducer.username
+        }
+    })
+
+    if (State.roleid !== 3) {
+        return <Redirect to={'/notfound'} />
+    }
     return (
         <div>
             <Header />

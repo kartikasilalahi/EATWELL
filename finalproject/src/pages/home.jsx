@@ -19,6 +19,7 @@ import Toast from 'light-toast'
 import { MDBIcon } from "mdbreact";
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css'
+import { grey } from '@material-ui/core/colors';
 
 
 class Home extends Component {
@@ -132,44 +133,46 @@ class Home extends Component {
     // ===============
     renderallproduct = () => {
         const { dataProduk, range, rangeprice, option, opt } = this.state
-        console.log(opt)
-        console.log(option)
+        let allproduk = dataProduk
         let datapro = []
+        let dataprice = []
+        let dataopt = []
 
-        if (range === false || opt === false) {
-            datapro = dataProduk
+        if (range) {
+            dataprice = allproduk.filter((val, i) => val.hargadisc >= rangeprice.min && val.hargadisc <= rangeprice.max)
+            dataprice = dataprice.sort((a, b) => { return a.hargadisc - b.hargadisc })
         }
-        else if (range) {
-            datapro = dataProduk.filter((val, i) => val.harganormal - (val.harganormal * val.diskon / 100) >= rangeprice.min && val.harganormal - (val.harganormal * val.diskon / 100) <= rangeprice.max)
-        }
-
 
         if (opt) {
             console.log(option)
             if (option === 'discount') {
-                dataProduk.sort((a, b) => {
+                dataopt = allproduk.sort((a, b) => {
                     return b.diskon - a.diskon
                 })
-                datapro = dataProduk
+
             } else if (option === 'highest-price') {
-                dataProduk.sort((a, b) => {
-                    console.log('MASUK')
+                dataopt = allproduk.sort((a, b) => {
                     return b.hargadisc - a.hargadisc
                 })
-                datapro = dataProduk
             } else if (option === 'lowest-price') {
-                dataProduk.sort((a, b) => {
+                dataopt = allproduk.sort((a, b) => {
                     return a.hargadisc - b.hargadisc
                 })
-                datapro = dataProduk
             }
         }
 
-        console.log(datapro)
+        if (range == false && opt === false) datapro = dataProduk
+        else if (range) datapro = dataprice
+        else if (opt) datapro = dataopt
+
+        if (datapro.length === 0) {
+            return <div className="mx-auto" >
+                <h6 style={{ color: 'grey' }}>Sorry. Product Not found</h6></div>
+        }
+
         return datapro.map((val, index) => {
             const discount = datapro[index].diskon
-            const harganormal = datapro[index].harganormal
-            const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
+            let hargadiskon = 'Rp. ' + Numeral(datapro[index].hargadisc).format('0,0.00')
             return (
                 <Fade key={index} bottom cascade>
                     <div key={index} className="grid">
@@ -198,22 +201,26 @@ class Home extends Component {
                                 <h5>{val.namakategori}</h5>
                                 <h4>{val.namaproduk} - {hargadiskon}</h4>
                                 <h6> <MdRestaurant />{val.namatoko}</h6>
-                                <p>
-                                    <Link to={'/detailproduk/' + val.id}>
-                                        <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
-                                            <i className="fa fa-shopping-cart" ></i>
-                                        </Tooltip>
-                                    </Link>
-                                    {
-                                        this.props.roleid === 1 ?
-                                            <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
-                                                <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
-                                            </Tooltip> :
-                                            <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
-                                                <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
-                                            </Tooltip>
-                                    }
-                                </p>
+                                {
+                                    this.props.roleid === 2 || this.props.roleid === 3 ? null :
+                                        <p>
+                                            <Link to={'/detailproduk/' + val.id}>
+                                                <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
+                                                    <i className="fa fa-shopping-cart" ></i>
+                                                </Tooltip>
+                                            </Link>
+                                            {
+                                                this.props.roleid === 1 ?
+                                                    <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
+                                                        <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
+                                                    </Tooltip> :
+                                                    <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
+                                                        <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
+                                                    </Tooltip>
+                                            }
+                                        </p>
+                                }
+
                             </figcaption>
                         </figure>
                     </div>
@@ -249,11 +256,11 @@ class Home extends Component {
                             </Tooltip>
                             <Tooltip TransitionComponent={Zoom} title="reset" arrow placement="top">
                                 <img src={require('./images/icons/reset.png')} height='25px'
-                                    onClick={() => { this.setState({ opt: false, range: false, popoverOpenPrice: !popoverOpenPrice, rangeprice: { max: 0, min: 0 } }) }} />
+                                    onClick={() => { this.setState({ range: false, popoverOpenPrice: !popoverOpenPrice, rangeprice: { max: 0, min: 0 }, opt: false, option: 'Sort By' }) }} />
                             </Tooltip>
                             <Tooltip TransitionComponent={Zoom} title="apply!" arrow placement="top">
                                 <img src={require('./images/icons/yes.png')} height='25px'
-                                    onClick={() => this.setState({ opt: false, range: true, popoverOpenPrice: !popoverOpenPrice })} />
+                                    onClick={() => this.setState({ range: true, popoverOpenPrice: !popoverOpenPrice, opt: false, option: 'Sort By' })} />
                             </Tooltip>
                         </div>
                     </PopoverBody>
@@ -268,8 +275,8 @@ class Home extends Component {
                             <div onClick={() => this.setState({ option: 'discount', opt: true, range: false, rangeprice: { max: 0, min: 0 } })} className='filteroption'>Discount</div>
                         </div>
                         <div className='d-flex justify-content-between px-2 py-1'>
-                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, option: 'Sort By', opt: false })} size='sm' className="btn btn-grey py-1">reset</Button>
-                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, opt: false, range: false, rangeprice: { max: 0, min: 0 } })} size='sm' className="btn btn-grey py-1">ok</Button>
+                            {/* <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, option: 'Sort By', opt: false, range: false, rangeprice: { max: 0, min: 0 } })} size='sm' className="btn btn-grey py-1">reset</Button> */}
+                            <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, rangeprice: { max: 0, min: 0 } })} size='sm' className="btn btn-grey py-1">ok</Button>
                         </div>
                     </PopoverBody>
                 </Popover>
@@ -286,6 +293,7 @@ class Home extends Component {
                         </ul>
                     </div>
                 </div>
+
 
                 <div data-aos="fade-up" className="specials mx-5">
                     <div className="isi-specials d-flex">
@@ -378,3 +386,38 @@ const MapStateToProps = (state) => {
 }
 
 export default connect(MapStateToProps, { Open_Login, Open_Register, PembeliRegister })(Home);
+
+
+/*
+        //  else {
+        //     console.log('MASUK')
+        //     datapro = dataProduk
+        // }
+
+        // if (range === false || opt === false) {
+        //     datapro = dataProduk
+        // }
+        // else if (range) {
+        //     datapro = dataProduk.filter((val, i) => val.harganormal - (val.harganormal * val.diskon / 100) >= rangeprice.min && val.harganormal - (val.harganormal * val.diskon / 100) <= rangeprice.max)
+        // }
+
+
+        // if (opt) {
+        //     console.log(option)
+        //     if (option === 'discount') {
+        //         datapro = dataProduk.sort((a, b) => {
+        //             return b.diskon - a.diskon
+        //         })
+        //     } else if (option === 'highest-price') {
+        //         datapro = dataProduk.sort((a, b) => {
+        //             console.log('MASUK')
+        //             return b.hargadisc - a.hargadisc
+        //         })
+        //     } else if (option === 'lowest-price') {
+        //         datapro = dataProduk.sort((a, b) => {
+        //             return a.hargadisc - b.hargadisc
+        //         })
+        //     }
+        // }
+
+*/

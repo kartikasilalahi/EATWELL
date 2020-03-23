@@ -1,25 +1,26 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux'
-// import Header from '../../components/mainheader'
+import { useSelector } from 'react-redux'
 import Header from '../../components/header'
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 import Akunsaya from './compuser/akun-saya'
 import Transaksisaya from './compuser/transaksi-saya'
 import Wishlist from './compuser/favorit-saya'
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 function Akunuser() {
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const State = useSelector(({ authReducer }) => {
         return {
-            id: authReducer.id,
-            roleid: authReducer.roleid,
-            username: authReducer.username
+            // id: authReducer.id,
+            roleid: authReducer.roleid
+            // username: authReducer.username
         }
     })
 
-    let id = localStorage.getItem('id')
+    if (State.roleid !== 1) {
+        return <Redirect to={'/notfound'} />
+    }
     return (
         <div>
             <div style={{ height: "78px", backgroundColor: "rgba(0,0,0,.9)" }}>
@@ -28,9 +29,6 @@ function Akunuser() {
             <div>
                 <Tabs defaultTab="vertical-tab-one" vertical>
                     <TabList className="ml-5 mt-5">
-                        <div className="nama-resto w-auto">
-                            <h6>{State.username}</h6>
-                        </div>
                         <Tab tabFor="vertical-tab-one">
                             <i className="fa fa-money" ></i>
                             <p>My Transaction</p>

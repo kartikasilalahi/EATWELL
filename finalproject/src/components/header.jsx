@@ -48,6 +48,7 @@ class Header extends Component {
 
     render() {
         if (this.state.tohome) return <Redirect to='/' />
+        // if (this.state.tohome) return <Redirect to='/' />
         return (
             <div>
                 <div className="header d-flex " style={{

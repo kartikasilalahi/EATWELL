@@ -1405,7 +1405,11 @@ figure.effect-winston:hover p a:first-child i {
 	width: 200px !important;
 	font-size: 15px;
 	background-color: whitesmoke;
-	padding-top: 2%;
+	
+}
+
+.lamanmitra .nama-resto {
+	padding-top: 10% !important;
 
 }
 
@@ -1860,4 +1864,11 @@ ul.pagination a.page-link:hover {
 	.notfound h2 {
 	font-size: 18px;
 }
+}
+
+
+.statistic canvas{
+	justify-content: center;
+	height: 500px !important;
+	width: 980px !important;
 }
