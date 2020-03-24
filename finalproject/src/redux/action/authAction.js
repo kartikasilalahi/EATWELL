@@ -13,6 +13,13 @@ import {
 } from './types'
 import { APIURL } from './../../helper/apiurl'
 
+export const LOADING = act => {
+    return {
+        type: AUTH_LOADING,
+        payload: act
+    }
+}
+
 /* === modal login === */
 export const Open_Login = act => {
     return {

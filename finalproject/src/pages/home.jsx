@@ -19,7 +19,6 @@ import Toast from 'light-toast'
 import { MDBIcon } from "mdbreact";
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css'
-import { grey } from '@material-ui/core/colors';
 
 
 class Home extends Component {

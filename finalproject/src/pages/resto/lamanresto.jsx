@@ -3,18 +3,16 @@ import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
 import Manageproduct from './compmitra/manageproduk'
 import Transaksi from './compmitra/transaksi'
 import Profile from './compmitra/profile'
-import Statistic from './compmitra/statistic'
+// import Statistic from './compmitra/statistic'
 import Header from '../../components/header'
 import Footer from '../../components/footer'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
-
+import Notfound from '../../components/notfound'
 
 class Lamanmitra extends React.Component {
     render() {
-
         if (this.props.roleid !== 2) {
-            return <Redirect to={'/notfound'} />
+            return <Notfound />
         }
         return (
             <div>
@@ -51,9 +49,9 @@ class Lamanmitra extends React.Component {
                         <TabPanel style={{ width: "100%" }} tabId="vertical-tab-three">
                             <Transaksi />
                         </TabPanel>
-                        <TabPanel style={{ width: "100%" }} tabId="vertical-tab-four">
+                        {/* <TabPanel style={{ width: "100%" }} tabId="vertical-tab-four">
                             <Statistic />
-                        </TabPanel>
+                        </TabPanel> */}
                     </Tabs>
                 </div>
                 <Footer />

@@ -7,6 +7,8 @@ router.get('/dataprod', produkController.getProduk)
 
 router.get('/search-product', produkController.searchProduct)
 
+router.get('/getday', produkController.getStatistic)
+
 router.get('/range-price', produkController.getProductbyPrice)
 
 router.get('/filterproduct/:filterby', produkController.filterProduct)

@@ -52,7 +52,7 @@ function Transaksi() {
                     <td>{i + 1}</td>
                     <td>{moment(val.tanggalpesan).format("YYYY-MM-DD HH:mm:ss")}</td>
                     <td>{val.kodetransaksi}</td>
-                    <td>{val.kodevoucher}</td>
+                    <td style={{ color: 'green' }}>{val.kodevoucher}</td>
                     <td>{val.statusvoucher}</td>
                     <td>{val.namaproduk}</td>
                     <td>

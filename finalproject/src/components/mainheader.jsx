@@ -5,8 +5,9 @@ import { Carousel } from 'react-responsive-carousel'
 import { Link, Redirect } from 'react-router-dom'
 import { MDBBtn, MDBInput } from 'mdbreact'
 import Swal from "sweetalert2";
-import { Open_Login, Open_Register, PembeliRegister, Login_User, Logout_Success, ERROR_LOGIN, ERROR_REGISTER_PEMBELI } from '../redux/action'
+import { Open_Login, Open_Register, PembeliRegister, Login_User, Logout_Success, ERROR_LOGIN, ERROR_REGISTER_PEMBELI, LoadingRegist } from '../redux/action'
 import { connect } from 'react-redux'
+import Loadingspinner from 'react-spinners/PulseLoader'
 
 
 class Header extends Component {
@@ -110,7 +111,7 @@ class Header extends Component {
         var phone = this.phone.value
         var password = this.pass.value
         var confpassword = this.confpass.value
-
+        this.props.LoadingRegist(true)
         this.props.PembeliRegister({
             username,
             email,
@@ -187,6 +188,7 @@ class Header extends Component {
 
                                 <div className="text-center my-1">
                                     <MDBBtn size="sm" onClick={this.btnLogin}>Login</MDBBtn>
+
                                 </div>
 
                                 <div className="mt-1 text-right" style={{ fontSize: "13px" }}>
@@ -236,9 +238,19 @@ class Header extends Component {
                                 </div>
 
                                 <div className="text-center mt-2">
-                                    <MDBBtn size="sm" onClick={this.btnRegister} color="cyan">
+                                    {/* <MDBBtn size="sm" onClick={this.btnRegister} color="cyan">
                                         Register
-                                    </MDBBtn>
+                                    </MDBBtn> */}
+                                    {
+                                        this.props.loadingregist ?
+                                            <Loadingspinner
+                                                size={8}
+                                                color={"#31332F"}
+                                                margin={2}
+                                            />
+                                            :
+                                            <MDBBtn size="sm" onClick={this.btnRegister} color="cyan">Register</MDBBtn>
+                                    }
                                 </div>
 
                                 <div className="mt-2 text-right" style={{ fontSize: "12px" }}>
@@ -338,7 +350,7 @@ const MapStateToProps = (state) => {
         errorlogin: state.authReducer.errorlogin,
         login: state.authReducer.login,
         username: state.authReducer.username,
-        loading: state.authReducer.loading,
+        loadingregist: state.authReducer.loadingregist,
         roleid: state.authReducer.roleid
     }
 }
@@ -351,6 +363,7 @@ export default connect(MapStateToProps,
         Login_User,
         Logout_Success,
         ERROR_LOGIN,
-        ERROR_REGISTER_PEMBELI
+        ERROR_REGISTER_PEMBELI,
+        LoadingRegist
     })
     (Header);

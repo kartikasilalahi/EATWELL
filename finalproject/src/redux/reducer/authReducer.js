@@ -49,8 +49,8 @@ export default (state = INITIAL_STATE, action) => {
         case LOGIN_SUCCESS:
             console.log(action.payload)
             return { ...state, ...action.payload, modallogin: false, login: true, loading: false, errorlogin: '' }
-        case LOGIN_LOADING:
-            return { ...state, loading: true, errorlogin: '' }
+        // case LOGIN_LOADING:
+        //     return { ...state, loading: true, errorlogin: '' }
         case LOGIN_ERROR:
             console.log('error login', action.payload)
             return { ...state, errorlogin: action.payload, loading: false }
@@ -65,7 +65,7 @@ export default (state = INITIAL_STATE, action) => {
 
         /* === register pembeli === */
         case REGISTER_PEMBELI_SUCCESS:
-            return { ...state, ...action.payload, errorregist: '', register: true, modalregister: false }
+            return { ...state, ...action.payload, errorregist: '', register: true, modalregister: false, loadingregist: false }
         case REGISTER_PEMBELI_ERROR:
             return { ...state, errorregist: action.payload, modalregister: true }
 
@@ -76,7 +76,7 @@ export default (state = INITIAL_STATE, action) => {
         case REGISTER_TOKO_ERROR:
             return { ...state, errorregistToko: action.payload, loadingregist: false }
         case "LOADING_REGIST":
-            return { ...state, loadingregist: true, errorregistToko: '' }
+            return { ...state, loadingregist: true, errorregistToko: '', errorregist: '' }
         default:
             return state
     }

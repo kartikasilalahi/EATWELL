@@ -2,7 +2,7 @@ const { mysql } = require('../connection')
 const fs = require('fs')
 const { uploader } = require('../helper/uploader')
 const moment = require('moment')
-
+const getdays = require('../helper/getdays')
 module.exports = {
     // ===============
     // GET PRODUK ALL
@@ -586,5 +586,29 @@ module.exports = {
 
             })
         }
+    },
+
+
+    // STATISTIC PENJUALAN
+    // ===================
+    getStatistic: (req, res) => {
+        // let now = moment();
+        // let firstday = now.clone().weekday(1).format("YYYY-MM-DD");
+        // let lastday = now.clone().weekday(5).format("YYYY-MM-DD");
+        var today = new Date();
+        var year = today.getFullYear();
+        let { month } = req.query
+        month = 2
+
+        let getday = getdays(month, year)
+        let first = moment(getday.first).format('YYYY-MM-DD')
+        let last = moment(getday.last).format('YYYY-MM-DD')
+        let sql = `select sum(terjual) as totalterjual, sum(totalharga) as totalincome from userpayment u left join produk p on u.idproduk = p.id 
+        where p.idtoko=2 AND tanggalbayar between '${first}' AND '${last}'`
+        // console.log(sql)
+        mysql.query(sql, (err, result) => {
+            if (err) return res.status(500).send(err)
+            return res.status(200).send(result)
+        })
     }
 }
