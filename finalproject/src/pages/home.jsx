@@ -286,9 +286,9 @@ class Home extends Component {
                         <h2 className="judul">Find the best promos around you<br />and let's eat well</h2>
 
                         <ul className="home-social">
-                            <li data-aos="zoom-in" data-aos-duration='1000'><a href=""><i className="fa fa-instagram" ></i><span>Instagram</span></a></li>
-                            <li data-aos="zoom-in" data-aos-duration='1000'><a href=""><i className="fa fa-twitter" ></i><span>Twitter</span></a></li>
-                            <li data-aos="zoom-in" data-aos-duration='1000'><a href=""><i className="fa fa-github" ></i><span>Github</span></a></li>
+                            <li data-aos="zoom-in" data-aos-duration='1000'><a href="https://www.instagram.com/kartikasilalahi" target="_blank"><i className="fa fa-instagram" ></i><span>Instagram</span></a></li>
+                            <li data-aos="zoom-in" data-aos-duration='1000'><a href="https://twitter.com/kartikasilalahi" target="_blank"><i className="fa fa-twitter" ></i><span>Twitter</span></a></li>
+                            <li data-aos="zoom-in" data-aos-duration='1000'><a href="https://github.com/kartikasilalahi" target="_blank"><i className="fa fa-github" ></i><span>Github</span></a></li>
                         </ul>
                     </div>
                 </div>

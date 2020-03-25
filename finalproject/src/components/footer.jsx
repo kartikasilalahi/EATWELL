@@ -26,7 +26,7 @@ class Footer extends Component {
         <div className="footer-center">
           <div>
             <i className="fa fa-map-marker" />
-            <p><span>444 S. Cedros Ave</span> Solana Beach, California</p>
+            <p><span>200 . Mammpang</span> Mampang Prapatan, South Jakarta</p>
           </div>
           <div>
             <i className="fa fa-phone" />
@@ -44,9 +44,9 @@ class Footer extends Component {
           </p>
           <div className="footer-icons">
             <a href="#"><i className="fa fa-facebook" /></a>
-            <a href="#"><i className="fa fa-twitter" /></a>
-            <a href="#"><i className="fa fa-linkedin" /></a>
-            <a href="#"><i className="fa fa-github" /></a>
+            <a href="https://twitter.com/kartikasilalahi" target="_blank"><i className="fa fa-twitter" /></a>
+            <a href="https://www.linkedin.com/in/kartikasilalahi/"><i className="fa fa-linkedin" target="_blank" /></a>
+            <a href="https://github.com/kartikasilalahi" target="_blank"><i className="fa fa-github" /></a>
           </div>
         </div>
       </footer>
