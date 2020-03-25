@@ -3,6 +3,8 @@ import { Input, FormGroup, Label, Col, Button } from 'reactstrap';
 import Axios from 'axios'
 import { APIURL, APIURLimagetoko } from '../../../helper/apiurl'
 import { AiOutlineWarning } from 'react-icons/ai'
+import Tooltip from '@material-ui/core/Tooltip';
+import Toast from 'light-toast'
 
 function Profile() {
     const [dataResto, setdataResto] = useState([]);
@@ -78,12 +80,8 @@ function Profile() {
     const renderSelect = (x) => {
         // console.log(x)
         return Options.map((val, i) => {
-            if (val === x) {
-                return <option value={val} key={i} selected>{val}</option>
-            }
-
+            if (val === x) return <option value={val} key={i} selected>{val}</option>
             return <option value={val} key={i}>{val}</option>
-
         })
     }
 
@@ -103,13 +101,16 @@ function Profile() {
             phone: editResto.phone
         }
 
-        Axios.post(`${APIURL}produk/editprofileresto/${detail.idtoko}`, detail)
-            .then(res => {
-                console.lzog('success', res.data)
-                alert('Berhasil ')
-            }).catch(err => {
-                console.log(err)
-            })
+        // alert('Berhasil ')
+        Toast.loading(`Saving. Please wait a moment`);
+        setTimeout(() => {
+            Axios.post(`${APIURL}produk/editprofileresto/${detail.idtoko}`, detail)
+                .then(res => { console.lzog('success', res.data) })
+                .catch(err => { console.log(err) })
+            Toast.success('success..', 2000)
+            Toast.hide();
+        }, 2300);
+
     }
 
     return (

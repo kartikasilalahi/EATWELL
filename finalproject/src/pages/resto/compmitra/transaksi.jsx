@@ -11,7 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 function Transaksi() {
 
-    const [dataProduk, setdataProduk] = useState();
+    const [dataProduk, setdataProduk] = useState([]);
     const [detailProduk, setdetailProduk] = useState();
     const [searchfield, setsearchfield] = useState('');
     const [modalDetail, setmodalDetail] = useState(false);
@@ -22,19 +22,12 @@ function Transaksi() {
     useEffect(() => {
         let id = parseInt(localStorage.getItem('id'))
         Axios.get(`${APIURL}transaksiresto/expvoucher`)
-            .then(result => {
+            .then(() => {
                 Axios.get(`${APIURL}transaksiresto/gettransaksiresto/${id}`)
-                    .then(res => {
-                        console.log('ini dataproduk', res.data)
-                        setdataProduk(res.data)
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    .then(res => setdataProduk(res.data))
+                    .catch(err => console.log(err))
             })
-            .catch(error => {
-                console.log(error);
-            })
+            .catch(err => console.log(err))
     }, [])
 
 
@@ -153,7 +146,7 @@ function Transaksi() {
         setsearchfield(e.target.value)
     }
 
-    if (!dataProduk) {
+    if (dataProduk.length === 0) {
         return (
             <div className="no-transaksi mx-auto text-center">
                 <img className="img-no-transaksi" src={require('../../images/novoucher.svg')} alt="" />
@@ -164,9 +157,7 @@ function Transaksi() {
 
     return (
         <div className="transaksi">
-            {
-                modalDetail ? renderDetailProduk() : null
-            }
+            {modalDetail ? renderDetailProduk() : null}
 
             <div className="mt-4">
                 <h3>Transaction </h3>

@@ -7,11 +7,10 @@ import Toast from 'light-toast'
 import { Button, Modal, ModalBody, CustomInput } from 'reactstrap'
 import { APIURL, APIURLimagetoko } from '../../../helper/apiurl';
 
-let kali = 1
-
+// let kali = 1
 function TransaksiUser() {
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const State = useSelector(({ authReducer }) => {
         return {
             email: authReducer.email
@@ -41,29 +40,15 @@ function TransaksiUser() {
         let id = localStorage.getItem('id')
         // if (kali < 2) {
         Axios.get(`${APIURL}transaction/onprocess/${id}`)
-            .then(res => {
-                setdataProduct(res.data)
-                console.log(res.data)
-                console.log('1')
-            }).catch(err => {
-                console.log(err)
-            })
+            .then(res => setdataProduct(res.data))
+            .catch(err => console.log(err))
         Axios.get(`${APIURL}transaction/overtimepayment/${id}`)
-            .then(res => {
-                setdataProduct(res.data)
-                console.log('2')
-            }).catch(err => {
-                console.log(err)
-            })
-        Axios.get(`${APIURL}transaction/history/${id}`)
-            .then(res2 => {
-                console.log(res2.data)
-                console.log('3')
+            .then(res => setdataProduct(res.data))
+            .catch(err => console.log(err))
 
-                setdataHistory(res2.data)
-            }).catch(err => {
-                console.log(err)
-            })
+        Axios.get(`${APIURL}transaction/history/${id}`)
+            .then(res2 => setdataHistory(res2.data))
+            .catch(err => console.log(err))
         // kali++
         // }
     }, [])

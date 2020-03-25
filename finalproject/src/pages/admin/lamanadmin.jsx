@@ -1,12 +1,16 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Tabs, Tab, TabPanel, TabList } from "react-web-tabs";
-import { Redirect } from 'react-router-dom';
+import Notfound from '../../components/notfound'
 import Alluser from './compadmin/allUser'
 import Allcategory from './compadmin/manageCategory'
 import Allschedule from './compadmin/manageSchedules'
 import Alltransaction from './compadmin/allTransaction'
 import Header from '../../components/header'
+import Toast from 'light-toast'
+import Tooltip from '@material-ui/core/Tooltip';
+
+
 function Lamanadmin() {
     const State = useSelector(({ authReducer }) => {
         return {
@@ -17,7 +21,7 @@ function Lamanadmin() {
     })
 
     if (State.roleid !== 3) {
-        return <Redirect to={'/notfound'} />
+        return <Notfound />
     }
     return (
         <div>

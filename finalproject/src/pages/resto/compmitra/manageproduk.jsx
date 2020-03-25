@@ -323,7 +323,7 @@ function Manageproduk() {
                             setdataImageResto(res1.data)
                             seteditImage(false)
                         }).catch(err => { console.log(err) })
-                    Toast.success('deleted..', 1500)
+                    Toast.success('success edit..', 1500)
                     Toast.hide();
                 }, 2000);
             }).catch(err => {
@@ -483,8 +483,12 @@ function Manageproduk() {
                                     </tbody>
                                 </Table>
                             ) :
-                            <div style={{ width: "100%" }}>
-                                <img className="text-center" src={require('../../../pages/images/noprod.gif')} width='900rem' alt="" />
+                            // <div style={{ width: "100%" }}>
+                            //     <img className="text-center" src={require('../../../pages/images/noprod.gif')} width='900rem' alt="" />
+                            // </div>
+                            <div className="no-transaksi-user text-center">
+                                <img className="img-no-transaksi" height='300px' src={require('../../../pages/images/novoucher.svg')} alt="" />
+                                <p>There are no products. Please click add product</p>
                             </div>
                     }
 
@@ -497,3 +501,4 @@ function Manageproduk() {
 }
 
 export default Manageproduk;
+

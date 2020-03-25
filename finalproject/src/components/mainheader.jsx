@@ -238,13 +238,10 @@ class Header extends Component {
                                 </div>
 
                                 <div className="text-center mt-2">
-                                    {/* <MDBBtn size="sm" onClick={this.btnRegister} color="cyan">
-                                        Register
-                                    </MDBBtn> */}
                                     {
                                         this.props.loadingregist ?
                                             <Loadingspinner
-                                                size={8}
+                                                size={4}
                                                 color={"#31332F"}
                                                 margin={2}
                                             />
