@@ -70,11 +70,11 @@ class Home extends Component {
     //         idproduk, iduser
     //     }
     //     Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
-    //         .then(() => {
-    //             Toast.loading(`Add to Wishlist. Please wait a moment`);
-    //             setTimeout(() => {
-    //                 Toast.success('Success. Product already add to my wishlist', 2000)
-    //                 Toast.hide();
+    // .then(() => {
+    //     Toast.loading(`Add to Wishlist. Please wait a moment`);
+    //     setTimeout(() => {
+    //         Toast.success('Success. Product already add to my wishlist', 2000)
+    //         Toast.hide();
     //             }, 3000);
     //         }).catch((err) => { console.log(err) })
     // }

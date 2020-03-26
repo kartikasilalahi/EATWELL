@@ -3,6 +3,7 @@ import { Input, Label, Button, Form } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from 'axios';
 import { APIURL } from '../../../helper/apiurl';
+import Toast from 'light-toast'
 
 let kali = 1
 
@@ -49,18 +50,17 @@ function Akunsaya() {
         }
         Axios.put(`${APIURL}user/edituser/${id}`, datas)
             .then(res => {
-                console.log(res.data.status)
-                // setmessage({ ...message, [res.data.status]: res.data.message })
                 if (res.data.status) {
-                    // console.log('error sis')
                     setmessage({ ...message, error: res.data.message })
                 } else {
-                    alert('Berhasil')
-                    setmessage({ ...message, error: '' })
+                    Toast.loading(`Edit Profile. Please wait a moment`);
+                    setTimeout(() => {
+                        Toast.success('Success..', 2000)
+                        setmessage({ ...message, error: '' })
+                        Toast.hide();
+                    }, 3000);
                 }
-            }).catch(err => {
-                // console.log(err)
-            })
+            }).catch(err => console.log(err))
     }
 
     // RENDER ERROR
@@ -86,18 +86,20 @@ function Akunsaya() {
     // ============
     const changeEmail = () => {
         const id = localStorage.getItem('id')
-        const { email } = editUser
-        Axios.put(`${APIURL}user/editemail/${id}`, { email })
+        let { email, username } = editUser
+        Axios.put(`${APIURL}user/editemail`, { email, username })
             .then(res => {
-                // console.log(res.data)
+                Toast.loading(`Change Email. Please wait a moment`);
+                setTimeout(() => {
+                    Toast.success('Success.. check your email to verify your new email.If not, your email will not be changed (you still use the old email)', 2800)
+                    Toast.hide();
+                }, 3000);
             }).catch(err => {
                 // console.log(err)
             })
     }
 
-
-    // console.log(editUser)
-    // console.log('message', message)
+    console.log('EDIT USER', editUser)
     // RETURN
     return (
         <div className="akun-saya d-flex">
@@ -117,7 +119,7 @@ function Akunsaya() {
                 <div>
                     <Form inline>
                         <Input className="w-75" type="email" defaultValue={editUser.email} onChange={e => seteditUser({ ...editUser, email: e.target.value })} />
-                        <Button className="btn btn-grey ml-4 mr-0" style={{ fontSize: '10px' }} size="sm" >change</Button>
+                        <Button onClick={changeEmail} className="btn btn-grey ml-4 mr-0" style={{ fontSize: '10px' }} size="sm" >change</Button>
                     </Form>
                 </div>
             </div>

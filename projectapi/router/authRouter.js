@@ -1,6 +1,5 @@
 const express = require('express')
 const { authController } = require('../controller')
-// const { auth } = require('../helper/auth')
 
 const router = express.Router()
 

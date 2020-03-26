@@ -101,7 +101,7 @@ module.exports = {
     // REGISTER PEMBELI
     // ================
     registerPembeli: (req, res) => {
-        var { username, email, phone, password, confpassword } = req.body
+        var { username, email, phone, password } = req.body
 
         var sql = `SELECT * FROM user WHERE username='${username}'`
         mysql.query(sql, (err, results) => {

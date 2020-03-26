@@ -6,16 +6,16 @@ import Fade from 'react-reveal/Fade';
 import Numeral from 'numeral'
 import Axios from 'axios'
 import 'aos/dist/aos.css'
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import moment from 'moment'
 import { MdRestaurant } from 'react-icons/md'
-import { MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBCol } from "mdbreact";
+import { MDBIcon, MDBPagination, MDBPageItem, MDBPageNav } from "mdbreact";
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
-import { Input, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
+import { Input } from 'reactstrap'
 import Header from '../components/mainheader'
 import Loadingspinner from 'react-spinners/PulseLoader'
 
-// import Toast from 'light-toast'
+
 // import AOS from 'aos'
 
 export default class searchResult extends Component {

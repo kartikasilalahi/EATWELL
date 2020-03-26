@@ -12,6 +12,7 @@ import Joinmitra from './pages/resto/joinresto'
 import Detailproduk from './pages/detailproduk'
 import Lamanmitra from './pages/resto/lamanresto'
 import Verifikasi from './components/verivied'
+import Newverify from './components/newverified'
 import Waitingverified from './components/waitingverified'
 import AkunUser from './pages/user/akun'
 import Lamanadmin from './pages/admin/lamanadmin'
@@ -50,6 +51,7 @@ class App extends Component {
           <Route exact path='/detailproduk/:idproduk' component={Detailproduk} />
           <Route exact path='/lamanmitra' component={Lamanmitra} />
           <Route exact path='/verified' exact component={Verifikasi} />
+          <Route exact path='/newverified' exact component={Newverify} />
           <Route exact path='/waitingverified' exact component={Waitingverified} />
           <Route exact path='/akun' exact component={AkunUser} />
           <Route exact path='/admin' exact component={Lamanadmin} />
