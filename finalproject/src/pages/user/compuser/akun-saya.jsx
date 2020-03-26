@@ -26,7 +26,8 @@ function Akunsaya() {
     // =========
     const [editUser, seteditUser] = useState({});
     const [message, setmessage] = useState({
-        error: ''
+        error: '',
+        errorpass: ''
     });
 
     // USE EFFECT
@@ -85,18 +86,53 @@ function Akunsaya() {
     // CHANGE EMAIL
     // ============
     const changeEmail = () => {
-        const id = localStorage.getItem('id')
         let { email, username } = editUser
         Axios.put(`${APIURL}user/editemail`, { email, username })
-            .then(res => {
+            .then(() => {
                 Toast.loading(`Change Email. Please wait a moment`);
                 setTimeout(() => {
                     Toast.success('Success.. check your email to verify your new email.If not, your email will not be changed (you still use the old email)', 2800)
                     Toast.hide();
                 }, 3000);
-            }).catch(err => {
-                // console.log(err)
-            })
+            }).catch(err => console.log(err))
+    }
+
+    // EDIT PASSWORD
+    // =============
+    const editPassword = () => {
+        let { username, password, newpassword, confpass } = editUser
+        Axios.put(`${APIURL}user/editpassword`, { username, password, newpassword, confpass })
+            .then((res) => {
+                if (res.data.msg) {
+                    setmessage({ ...message, errorpass: res.data.msg })
+                } else {
+                    Toast.loading(`Change Password. Please wait a moment`);
+                    setTimeout(() => {
+                        Toast.success('Success..', 2000)
+                        Toast.hide();
+                        seteditUser({ ...editUser, password: '', confpass: '', newpassword: '' })
+                    }, 3000);
+                }
+            }).catch(err => console.log(err))
+    }
+
+    // RENDER ERROR PASSWORD
+    // ===================
+    const renderErrorPass = () => {
+        if (message.errorpass) {
+            console.log('error sis ...')
+            return (
+                <div className="d-flex alert alert-danger mt-3 mb-2 pb-0" style={{ fontSize: '10px' }} >
+                    <div >
+                        <p style={{ lineHeight: '8px' }}>{message.errorpass}</p>
+                    </div>
+                    <div style={{ marginLeft: 'auto', fontWeight: 'bolder' }} >
+                        <p onClick={() => setmessage({ ...message, errorpass: '' })} style={{ lineHeight: '8px', cursor: 'pointer' }}>x</p>
+                    </div>
+                </div>
+            )
+        }
+        else return null
     }
 
     console.log('EDIT USER', editUser)
@@ -126,12 +162,13 @@ function Akunsaya() {
             {/* --- ganti pass --- */}
             <div className="right col-6 py-3" style={{ backgroundColor: "whitesmoke" }}>
                 <Label style={{ fontSize: '13px', color: 'green' }}>current password</Label>
-                <Input type="password" placeholder="input current password" />
+                <Input defaultValue='' type="password" placeholder="input current password" onChange={e => seteditUser({ ...editUser, password: e.target.value })} />
                 <Label className="mt-3" style={{ fontSize: '13px', color: 'green' }}>new password</Label>
-                <Input type="password" placeholder="input new password" />
+                <Input type="password" placeholder="input new password" onChange={e => seteditUser({ ...editUser, newpassword: e.target.value })} />
                 <Label className="mt-3" style={{ fontSize: '13px', color: 'green' }}>confirm new password</Label>
-                <Input type="password" placeholder="confirm new password" />
-                <Button className="btn btn-green mt-3" style={{ fontSize: '10px', marginLeft: '68%' }} size="sm">change password</Button>
+                <Input type="password" placeholder="confirm new password" onChange={e => seteditUser({ ...editUser, confpass: e.target.value })} />
+                {renderErrorPass()}
+                <Button className="btn btn-green mt-3" style={{ fontSize: '10px', marginLeft: '68%' }} size="sm" onClick={editPassword}>change password</Button>
             </div>
         </div>
     )
