@@ -1322,6 +1322,9 @@ figure.effect-winston:hover p a:first-child i {
 	padding-top: 2%;
 	margin-bottom: 2%;
 }
+.fav .true{
+	color: green;
+}
 
 /* --------------------------------------------------------
                         END DETAIL PRODUK

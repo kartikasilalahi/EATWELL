@@ -19,6 +19,7 @@ import Toast from 'light-toast'
 import { MDBIcon } from "mdbreact";
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css'
+import moment from 'moment'
 
 
 class Home extends Component {
@@ -62,21 +63,21 @@ class Home extends Component {
 
     // ADD TO WISHLIST
     // ==============
-    addToWishList = (index) => {
-        let idproduk = this.state.dataProduk[index].id
-        let iduser = localStorage.getItem('id')
-        let datawishlist = {
-            idproduk, iduser
-        }
-        Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
-            .then(() => {
-                Toast.loading(`Add to Wishlist. Please wait a moment`);
-                setTimeout(() => {
-                    Toast.success('Success. Product already add to my wishlist', 2000)
-                    Toast.hide();
-                }, 3000);
-            }).catch((err) => { console.log(err) })
-    }
+    // addToWishList = (index) => {
+    //     let idproduk = this.state.dataProduk[index].id
+    //     let iduser = localStorage.getItem('id')
+    //     let datawishlist = {
+    //         idproduk, iduser
+    //     }
+    //     Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
+    //         .then(() => {
+    //             Toast.loading(`Add to Wishlist. Please wait a moment`);
+    //             setTimeout(() => {
+    //                 Toast.success('Success. Product already add to my wishlist', 2000)
+    //                 Toast.hide();
+    //             }, 3000);
+    //         }).catch((err) => { console.log(err) })
+    // }
 
 
     // RENDER CATEGORY
@@ -203,9 +204,9 @@ class Home extends Component {
                                     <h5>{val.namakategori}</h5>
                                     <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
                                     <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
-                                        <span style={{ fontWeight: 'bolder', fontSize: '18px' }}>{hargadiskon}</span></h6>
+                                        <span style={{ fontWeight: 'bolder', fontSize: '16px' }}>{hargadiskon}</span></h6>
                                     <h6>stock {sisa}</h6>
-                                    <h6>{val.tanggalakhir}</h6>
+                                    <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
 
 
 

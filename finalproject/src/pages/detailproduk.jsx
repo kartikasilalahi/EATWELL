@@ -17,8 +17,7 @@ import Header from '../components/mainheader'
 import Numeral from 'numeral'
 import Toast from 'light-toast'
 import { Redirect } from 'react-router-dom'
-
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
+import { Modal, ModalBody, Button } from 'reactstrap'
 
 
 
@@ -39,7 +38,8 @@ class Detailproduk extends Component {
         jumlahmax: 3,
         stock: 0,
         msg: '',
-        msgbtn: ''
+        msgbtn: '',
+        wishlist: 'false'
     }
 
 
@@ -54,6 +54,10 @@ class Detailproduk extends Component {
                 Axios.get(`${APIURL}produk/getdetailresto/${res.data[0].usertokoid}`)
                     .then(res2 => { this.setState({ datatoko: res2.data[0] }) })
                     .catch(err2 => { console.log(err2) })
+                // Axios.get(`${APIURL}produk/getdetailresto/${res.data[0].usertokoid}`)
+                //     .then(res3 => { this.setState({ datatoko: res3.data[0] }) })
+                //     .catch(err2 => { console.log(err2) })
+
             })
             .catch(error => { console.log(error) })
 
@@ -114,9 +118,7 @@ class Detailproduk extends Component {
 
 
     render() {
-        // console.log('prod', this.state.dataproduk)
-        console.log('ini', this.state.msg)
-        // console.log('errornya ', this.props.pesanbuy)
+        console.log('prod')
         const { jumlah } = this.state
         const { namaproduk, tanggalakhir, tanggalmulai, harganormal, diskon, kuota, terjual, maxbeli, id } = this.state.dataproduk
         const { namatoko, alamat, phone, taxservice, takeaway, refund, holiday, idtoko } = this.state.datatoko
@@ -236,9 +238,33 @@ class Detailproduk extends Component {
                                                 <MDBBtn onClick={() => this.props.Open_Login(true)} color="success"> Login first </MDBBtn>
                                         }
                                     </div>
+                                    <div className="my-3 fav" onClick={() => {
+                                        this.setState({ wishlist: 'true' })
+                                        // addToWishList = (index) => {
+                                        let idproduk = this.props.match.params.idproduk
+                                        let iduser = localStorage.getItem('id')
+                                        let datawishlist = {
+                                            idproduk, iduser
+                                        }
+                                        Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
+                                            .then(() => {
+                                                Toast.loading(`Add to Wishlist. Please wait a moment`);
+                                                setTimeout(() => {
+                                                    Toast.success('Success. Product already add to my wishlist', 2000)
+                                                    Toast.hide();
+                                                }, 1500);
+                                            }).catch((err) => { console.log(err) })
+                                        // }
+                                    }}>
+                                        <h6 style={{ cursor: 'pointer' }}>
+                                            <i className={`${this.state.wishlist} fa fa-fw fa-heart`}></i>
+                                            Add to Wishlist
+                                        </h6>
+                                    </div>
                                 </MDBCardBody>
                                 <MDBCardFooter>
                                     <h3>{namatoko}</h3>
+
                                 </MDBCardFooter>
                             </MDBCard>
                         </div>
