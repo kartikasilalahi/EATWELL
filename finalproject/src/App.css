@@ -1325,6 +1325,23 @@ figure.effect-winston:hover p a:first-child i {
 .fav .true{
 	color: green;
 }
+.fav h6{
+	color: rgb(105, 104, 104);
+	font-weight: bold;
+}
+.fav h6:hover{
+	color: green;
+	
+}
+
+.strip{
+	justify-content: center;
+	margin-top: 1rem;
+    margin-bottom: 2rem;
+	width: 3rem;
+	border-radius: .2rem;
+	border-bottom: 4px solid  green;
+}
 
 /* --------------------------------------------------------
                         END DETAIL PRODUK

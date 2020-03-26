@@ -444,6 +444,32 @@ module.exports = {
     },
 
 
+    // ================
+    // CHECK WISHLIST
+    // ================
+    checkwislist: (req, res) => {
+        mysql.query(`SELECT * FROM wishlist where idproduk=${req.params.id}`, (err, result) => {
+            if (err) return res.status(500).send(err)
+            return res.status(200).send(result)
+        })
+    },
+
+    deletefromwishlist: (req, res) => {
+        // mysql.query(`DELETE FROM WISHLIST WHERE`)
+        let { idproduk, iduser } = req.query
+        let sql = `SELECT * FROM wishlist where idproduk=${idproduk} AND iduser=${iduser}`
+        mysql.query(sql, (err, result) => {
+            if (err) return res.status(500).send(err)
+            // return res.status(200).send(result)
+            sql = `DELETE FROM wishlist WHERE id=${result[0].id}`
+            mysql.query(sql, (err1, result1) => {
+                if (err1) return res.status(500).send(err1)
+                return res.status(200).send(result1)
+            })
+        })
+    },
+
+
     // ==============
     // FILTER PRODUCT
     // ==============

@@ -36,8 +36,11 @@ router.get('/getschedule/', produkController.getSchedule)
 router.post('/editprofileresto/:id', produkController.editProfileResto)
 router.post('/editjadwalresto', produkController.editJadwalResto)
 
+router.get('/checkwislist/:id', produkController.checkwislist)
 router.post('/addtowishlist', produkController.addWishlist)
 router.get('/getwishlist/:id', produkController.getWishlist)
+
+router.get('/deletefromwishlist', produkController.deletefromwishlist)
 
 
 

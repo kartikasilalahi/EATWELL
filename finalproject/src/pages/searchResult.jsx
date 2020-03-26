@@ -7,6 +7,7 @@ import Numeral from 'numeral'
 import Axios from 'axios'
 import 'aos/dist/aos.css'
 import { Link } from 'react-router-dom';
+import moment from 'moment'
 import { MdRestaurant } from 'react-icons/md'
 import { MDBIcon, MDBPagination, MDBPageItem, MDBPageNav, MDBCol } from "mdbreact";
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
@@ -90,9 +91,10 @@ export default class searchResult extends Component {
     renderResultsearch = () => {
         let { allproduct } = this.state
         return allproduct.map((val, index) => {
-            const discount = allproduct[index].diskon
-            const harganormal = allproduct[index].harganormal
-            const hargadiskon = 'Rp.' + Numeral(harganormal - Math.round(harganormal * discount / 100)).format('0,0.00')
+            let discount = allproduct[index].diskon
+            let hargadiskon = 'Rp. ' + Numeral(allproduct[index].hargadisc).format('0,0.00')
+            let harganormal = 'Rp. ' + Numeral(allproduct[index].harganormal).format('0,0.00')
+            let sisa = Number(val.kuota) - Number(val.terjual)
             return (
                 <Fade key={index} bottom cascade>
                     <div key={index} className="grid">
@@ -119,9 +121,12 @@ export default class searchResult extends Component {
                                     </button>
                             <figcaption>
                                 <h5>{val.namakategori}</h5>
-                                <h4>{val.namaproduk} - {hargadiskon}</h4>
-                                <h6> <MdRestaurant />{val.namatoko}</h6>
-                                <p>
+                                <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
+                                <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
+                                    <span style={{ fontWeight: 'bolder', fontSize: '16px' }}>{hargadiskon}</span></h6>
+                                <h6>stock {sisa}</h6>
+                                <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
+                                {/* <p>
                                     <Link to={'/detailproduk/' + val.id}>
                                         <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
                                             <i className="fa fa-shopping-cart" ></i>
@@ -136,7 +141,7 @@ export default class searchResult extends Component {
                                                 <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
                                             </Tooltip>
                                     }
-                                </p>
+                                </p> */}
                             </figcaption>
                         </figure>
 

@@ -171,7 +171,7 @@ class Home extends Component {
         }
 
         return datapro.map((val, index) => {
-            const discount = datapro[index].diskon
+            let discount = datapro[index].diskon
             let hargadiskon = 'Rp. ' + Numeral(datapro[index].hargadisc).format('0,0.00')
             let harganormal = 'Rp. ' + Numeral(datapro[index].harganormal).format('0,0.00')
             let sisa = Number(val.kuota) - Number(val.terjual)
@@ -207,8 +207,6 @@ class Home extends Component {
                                         <span style={{ fontWeight: 'bolder', fontSize: '16px' }}>{hargadiskon}</span></h6>
                                     <h6>stock {sisa}</h6>
                                     <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
-
-
 
                                     {/* {
                                         this.props.roleid === 2 || this.props.roleid === 3 ? null :
