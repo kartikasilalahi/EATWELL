@@ -25,6 +25,8 @@ const INITIAL_STATE = {
     errorregist: '',
     register: false,
 
+    loginnotif: false,
+
     // registerToko:false,
 
     loading: false,
@@ -47,10 +49,11 @@ export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         /* === login === */
         case LOGIN_SUCCESS:
-            console.log(action.payload)
-            return { ...state, ...action.payload, modallogin: false, login: true, loading: false, errorlogin: '' }
-        // case LOGIN_LOADING:
-        //     return { ...state, loading: true, errorlogin: '' }
+            return { ...state, ...action.payload, modallogin: false, login: true, loading: false, errorlogin: '', loginnotif: true }
+        case "LOGIN_NOTIF":
+            console.log('iniii')
+            console.log({ loginnotif: action.payload })
+            return { ...state, loginnotif: action.payload }
         case LOGIN_ERROR:
             console.log('error login', action.payload)
             return { ...state, errorlogin: action.payload, loading: false }

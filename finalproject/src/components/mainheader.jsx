@@ -5,9 +5,20 @@ import { Carousel } from 'react-responsive-carousel'
 import { Link, Redirect } from 'react-router-dom'
 import { MDBBtn, MDBInput } from 'mdbreact'
 import Swal from "sweetalert2";
-import { Open_Login, Open_Register, PembeliRegister, Login_User, Logout_Success, ERROR_LOGIN, ERROR_REGISTER_PEMBELI, LoadingRegist } from '../redux/action'
+import {
+    Open_Login,
+    Open_Register,
+    PembeliRegister,
+    Login_User,
+    Logout_Success,
+    ERROR_LOGIN,
+    ERROR_REGISTER_PEMBELI,
+    LoadingRegist,
+    Login_Success
+} from '../redux/action'
 import { connect } from 'react-redux'
 import Loadingspinner from 'react-spinners/PulseLoader'
+import Toast from 'light-toast'
 
 
 class Header extends Component {
@@ -99,8 +110,8 @@ class Header extends Component {
         var username = this.username.value
         var password = this.pass.value
         this.props.Login_User(username, password)
-        // this.props.Open_Login(false)
         this.props.Open_Register(false)
+
     }
 
     // REGISTER
@@ -120,6 +131,7 @@ class Header extends Component {
             confpassword
         });
         this.props.ERROR_LOGIN('')
+
 
     }
 
@@ -154,6 +166,10 @@ class Header extends Component {
     }
 
     render() {
+        // console.log(this.props.loginnotif)
+        if (this.props.register) {
+            Toast.success('Registered. Please check your email to verification :)', 2000)
+        }
         return (
             <div>
                 {/* ===== start modal =====*/}
@@ -348,7 +364,8 @@ const MapStateToProps = (state) => {
         login: state.authReducer.login,
         username: state.authReducer.username,
         loadingregist: state.authReducer.loadingregist,
-        roleid: state.authReducer.roleid
+        roleid: state.authReducer.roleid,
+        register: state.authReducer.register
     }
 }
 
@@ -361,6 +378,7 @@ export default connect(MapStateToProps,
         Logout_Success,
         ERROR_LOGIN,
         ERROR_REGISTER_PEMBELI,
-        LoadingRegist
+        LoadingRegist,
+        Login_Success
     })
     (Header);

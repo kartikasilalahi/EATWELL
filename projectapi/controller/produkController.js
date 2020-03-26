@@ -13,6 +13,7 @@ module.exports = {
                     p.id, 
                     p.namaproduk, 
                     p.harganormal, 
+                    p.tanggalakhir,
                     p.diskon,  
                     p.harganormal-(p.harganormal*p.diskon/100) as hargadisc,
                     p.kuota,

@@ -172,56 +172,67 @@ class Home extends Component {
         return datapro.map((val, index) => {
             const discount = datapro[index].diskon
             let hargadiskon = 'Rp. ' + Numeral(datapro[index].hargadisc).format('0,0.00')
+            let harganormal = 'Rp. ' + Numeral(datapro[index].harganormal).format('0,0.00')
+            let sisa = Number(val.kuota) - Number(val.terjual)
             return (
                 <Fade key={index} bottom cascade>
                     <div key={index} className="grid">
-                        <figure className="effect-winston">
-                            <img src={`${APIURLimagetoko}` + val.image} alt="image" />
-                            <button className="btn mx-auto p-0"
-                                style={
-                                    {
-                                        zIndex: 1,
-                                        cursor: 'text',
-                                        position: "absolute",
-                                        top: -6,
-                                        right: 0,
-                                        borderRadius: "0px 0px 0px 30px",
-                                        fontSize: "18px",
-                                        fontWeight: "bolder",
-                                        lineHeight: '17px',
-                                        height: "14%",
-                                        width: "23%",
-                                        color: "black",
-                                        backgroundColor: "#ADFF2F"
-                                    }
-                                }>{discount}%
+                        <Link to={'/detailproduk/' + val.id}>
+                            <figure className="effect-winston">
+                                <img src={`${APIURLimagetoko}` + val.image} alt="image" />
+                                <button className="btn mx-auto p-0"
+                                    style={
+                                        {
+                                            zIndex: 1,
+                                            cursor: 'text',
+                                            position: "absolute",
+                                            top: -6,
+                                            right: 0,
+                                            borderRadius: "0px 0px 0px 30px",
+                                            fontSize: "18px",
+                                            fontWeight: "bolder",
+                                            lineHeight: '17px',
+                                            height: "14%",
+                                            width: "23%",
+                                            color: "black",
+                                            backgroundColor: "#ADFF2F"
+                                        }
+                                    }>{discount}%
                                     </button>
-                            <figcaption>
-                                <h5>{val.namakategori}</h5>
-                                <h4>{val.namaproduk} - {hargadiskon}</h4>
-                                <h6> <MdRestaurant />{val.namatoko}</h6>
-                                {
-                                    this.props.roleid === 2 || this.props.roleid === 3 ? null :
-                                        <p>
-                                            <Link to={'/detailproduk/' + val.id}>
-                                                <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
-                                                    <i className="fa fa-shopping-cart" ></i>
-                                                </Tooltip>
-                                            </Link>
-                                            {
-                                                this.props.roleid === 1 ?
-                                                    <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
-                                                        <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
-                                                    </Tooltip> :
-                                                    <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
-                                                        <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
-                                                    </Tooltip>
-                                            }
-                                        </p>
-                                }
+                                <figcaption>
+                                    <h5>{val.namakategori}</h5>
+                                    <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
+                                    <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
+                                        <span style={{ fontWeight: 'bolder', fontSize: '18px' }}>{hargadiskon}</span></h6>
+                                    <h6>stock {sisa}</h6>
+                                    <h6>{val.tanggalakhir}</h6>
 
-                            </figcaption>
-                        </figure>
+
+
+                                    {/* {
+                                        this.props.roleid === 2 || this.props.roleid === 3 ? null :
+                                            <p>
+                                                <Link to={'/detailproduk/' + val.id}>
+                                                    <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
+                                                        <i className="fa fa-shopping-cart" ></i>
+                                                    </Tooltip>
+                                                </Link>
+                                                {
+                                                    this.props.roleid === 1 ?
+                                                        <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
+                                                            <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
+                                                        </Tooltip> :
+                                                        <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
+                                                            <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
+                                                        </Tooltip>
+                                                }
+                                            </p>
+                                    } */}
+
+                                </figcaption>
+
+                            </figure>
+                        </Link>
                     </div>
                 </Fade>
             )
@@ -385,38 +396,3 @@ const MapStateToProps = (state) => {
 }
 
 export default connect(MapStateToProps, { Open_Login, Open_Register, PembeliRegister })(Home);
-
-
-/*
-        //  else {
-        //     console.log('MASUK')
-        //     datapro = dataProduk
-        // }
-
-        // if (range === false || opt === false) {
-        //     datapro = dataProduk
-        // }
-        // else if (range) {
-        //     datapro = dataProduk.filter((val, i) => val.harganormal - (val.harganormal * val.diskon / 100) >= rangeprice.min && val.harganormal - (val.harganormal * val.diskon / 100) <= rangeprice.max)
-        // }
-
-
-        // if (opt) {
-        //     console.log(option)
-        //     if (option === 'discount') {
-        //         datapro = dataProduk.sort((a, b) => {
-        //             return b.diskon - a.diskon
-        //         })
-        //     } else if (option === 'highest-price') {
-        //         datapro = dataProduk.sort((a, b) => {
-        //             console.log('MASUK')
-        //             return b.hargadisc - a.hargadisc
-        //         })
-        //     } else if (option === 'lowest-price') {
-        //         datapro = dataProduk.sort((a, b) => {
-        //             return a.hargadisc - b.hargadisc
-        //         })
-        //     }
-        // }
-
-*/

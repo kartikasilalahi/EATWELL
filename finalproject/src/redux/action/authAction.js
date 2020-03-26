@@ -77,7 +77,7 @@ export const PembeliRegister = ({ username, email, phone, password, confpassword
                         dispatch({ type: REGISTER_PEMBELI_ERROR, payload: res.data.message })
                     } else {
                         dispatch({ type: REGISTER_PEMBELI_SUCCESS })
-                        console.log('success regist pembeli')
+                        // console.log('success regist pembeli')
                     }
                 }).catch((err) => {
                     console.log(err);
@@ -127,8 +127,12 @@ export const Login_User = (username, password) => {
                     localStorage.setItem('token', res.data.token)
                     localStorage.setItem('id', res.data.id)
                     dispatch({ type: LOGIN_SUCCESS, payload: res.data.result })
+                        .then(() => {
+
+                            dispatch({ type: Login_Success, payload: false })
+                        })
                 } else {
-                    console.log('2')
+                    // console.log('2')
                     dispatch({ type: LOGIN_ERROR, payload: res.data.message })
                 }
             })
@@ -142,6 +146,13 @@ export const reLogin = payload => {
     return {
         type: LOGIN_SUCCESS,
         payload
+    }
+}
+
+export const Login_Success = act => {
+    return {
+        type: 'LOGIN_NOTIF',
+        payload: act
     }
 }
 
