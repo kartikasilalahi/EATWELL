@@ -70,7 +70,7 @@ export default (state = INITIAL_STATE, action) => {
         case REGISTER_PEMBELI_SUCCESS:
             return { ...state, ...action.payload, errorregist: '', register: true, modalregister: false, loadingregist: false }
         case REGISTER_PEMBELI_ERROR:
-            return { ...state, errorregist: action.payload, modalregister: true }
+            return { ...state, errorregist: action.payload, modalregister: true, loadingregist: false }
 
         /* === register toko === */
         case REGISTER_TOKO_SUCCESS:

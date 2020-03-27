@@ -237,7 +237,7 @@ function Manageproduk() {
         let idToko = {
             idtoko: idtoko
         }
-        console.log(idtoko)
+        console.log('dataImgrsto', dataImageResto.length)
         return (
             dataImageResto.map((val, i) => {
                 return (
@@ -245,27 +245,55 @@ function Manageproduk() {
                         <img src={`${APIURLimagetoko + val.image}`} width="130px" height="86.6" alt="" />
                         <div>
                             <img onClick={() => editImageClick(i)} className="ml-5 mt-3 edit" style={{ cursor: "pointer" }} width="18px" src={require('../../../pages/images/icons/content.svg')}></img>
-                            <Tooltip title="Are you sure to delete the image? click if you sure" arrow placement="top">
-                                <img
-                                    /* --- delete image ----*/
-                                    onClick={() => {
-                                        Axios.get(`${APIURL}produk/deleteimgprodresto/${dataImageResto[i].id}`, { idtoko })
-                                            .then(() => {
-                                                Toast.loading(`Delete image. Please wait a moment`);
-                                                setTimeout(() => {
-                                                    Axios.get(`${APIURL}produk/imgprodresto/${idProduk}`)
-                                                        .then(res1 => { setdataImageResto(res1.data) })
-                                                        .catch(err => { console.log(err) })
-                                                    Toast.success('deleted..', 1500)
-                                                    Toast.hide();
-                                                }, 2000);
-                                            })
-                                            .catch(err => { console.log(err) })
-                                    }}
-                                    className="mt-3 ml-2 delete" style={{ cursor: "pointer" }} width="20px"
-                                    src={require('../../../pages/images/icons/bin.svg')}>
-                                </img>
-                            </Tooltip>
+                            {
+
+                                dataImageResto.length > 1 ?
+                                    <Tooltip title="Are you sure to delete the image? click if you sure" arrow placement="top">
+                                        <img
+                                            /* --- delete image ----*/
+                                            onClick={() => {
+                                                Axios.get(`${APIURL}produk/deleteimgprodresto/${dataImageResto[i].id}`, { idtoko })
+                                                    .then(() => {
+                                                        Toast.loading(`Delete image. Please wait a moment`);
+                                                        setTimeout(() => {
+                                                            Axios.get(`${APIURL}produk/imgprodresto/${idProduk}`)
+                                                                .then(res1 => { setdataImageResto(res1.data) })
+                                                                .catch(err => { console.log(err) })
+                                                            Toast.success('deleted..', 1500)
+                                                            Toast.hide();
+                                                        }, 2000);
+                                                    })
+                                                    .catch(err => { console.log(err) })
+                                            }}
+                                            className="mt-3 ml-2 delete" style={{ cursor: "pointer" }} width="20px"
+                                            src={require('../../../pages/images/icons/bin.svg')}>
+                                        </img>
+                                    </Tooltip>
+                                    :
+                                    dataImageResto.length == 0 ? null
+                                        :
+                                        null
+                                // <img
+                                //     /* --- delete image ----*/
+                                //     onClick={() => {
+                                //         Axios.get(`${APIURL}produk/deleteimgprodresto/${dataImageResto[i].id}`, { idtoko })
+                                //             .then(() => {
+                                //                 Toast.loading(`Delete image. Please wait a moment`);
+                                //                 setTimeout(() => {
+                                //                     Axios.get(`${APIURL}produk/imgprodresto/${idProduk}`)
+                                //                         .then(res1 => { setdataImageResto(res1.data) })
+                                //                         .catch(err => { console.log(err) })
+                                //                     Toast.success('deleted..', 1500)
+                                //                     Toast.hide();
+                                //                 }, 2000);
+                                //             })
+                                //             .catch(err => { console.log(err) })
+                                //     }}
+                                //     className="mt-3 ml-2 delete" style={{ cursor: "pointer" }} width="20px"
+                                //     src={require('../../../pages/images/icons/bin.svg')}>
+                                // </img>
+                            }
+
                         </div>
                     </div>
                 )

@@ -29,8 +29,34 @@ module.exports = {
 
             mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)*2) as maxprice FROM produk`, (err1, res1) => {
                 if (err1) return res.status(500).send(err1);
-                return res.status(200).send({ dataproduk: result, max: res1 }); // ==== dataproduk DISINI  HARUS SAMA di front end ===== 
+                sql = `SELECT
+                        p1.id, 
+                        p1.namaproduk, 
+                        p1.harganormal, 
+                        p1.tanggalakhir,
+                        p1.diskon,  
+                        p1.harganormal-(p1.harganormal*p1.diskon/100) as hargadisc,
+                        p1.kuota,
+                        p1.terjual,
+                        kp.namakategori,
+                        t.namatoko,
+                        i.image 
+                    FROM produk p1
+                    LEFT JOIN kategoriproduk kp ON p1.idkategoriproduk = kp.id
+                    LEFT JOIN toko t ON p1.idtoko = t.usertokoid
+                    LEFT JOIN images i ON p1.id=i.idproduk
+                    INNER JOIN (
+                        SELECT id, MAX(diskon) AS max_disc FROM produk
+                        group by id
+                        ) AS p2 ON p1.id=p2.id AND p1.diskon=p2.max_disc 
+                    WHERE i.cover=1  AND p1.tanggalakhir > '${now}' AND p1.tanggalmulai <= '${now}' ORDER BY p1.diskon DESC
+                    limit 5`
+                mysql.query(sql, (err2, res2) => {
+                    if (err2) return res.status(500).send(err2);
+                    return res.status(200).send({ dataproduk: result, max: res1, specialprod: res2 });
+                })
             })
+
 
         })
     },

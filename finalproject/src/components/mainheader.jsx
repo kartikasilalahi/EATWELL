@@ -19,6 +19,7 @@ import {
 import { connect } from 'react-redux'
 import Loadingspinner from 'react-spinners/PulseLoader'
 import Toast from 'light-toast'
+import Lamanresto from '../pages/resto/lamanresto'
 
 
 class Header extends Component {

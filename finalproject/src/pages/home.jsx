@@ -4,7 +4,7 @@ import Footer from '../components/footer'
 import { APIURL, APIURLimagetoko, URL } from '../helper/apiurl'
 import { MdRestaurant } from 'react-icons/md'
 import Axios from "axios"
-import { Input, Popover, Button, PopoverHeader, PopoverBody } from 'reactstrap'
+import { Input, Popover, Button, PopoverBody } from 'reactstrap'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import Header from '../components/mainheader'
@@ -50,7 +50,7 @@ class Home extends Component {
             .then((res) => this.setState({
                 dataProduk: res.data.dataproduk,
                 max: res.data.max[0].maxprice,
-                specialProduk: res.data.dataproduk.filter((val, index) => val.diskon >= 40)
+                specialProduk: res.data.specialprod
             }))
             .catch((err) => console.log(err))
 
@@ -59,26 +59,6 @@ class Home extends Component {
             .catch((err) => { console.log(err) })
 
     }
-
-
-    // ADD TO WISHLIST
-    // ==============
-    // addToWishList = (index) => {
-    //     let idproduk = this.state.dataProduk[index].id
-    //     let iduser = localStorage.getItem('id')
-    //     let datawishlist = {
-    //         idproduk, iduser
-    //     }
-    //     Axios.post(`${APIURL}produk/addtowishlist`, datawishlist)
-    // .then(() => {
-    //     Toast.loading(`Add to Wishlist. Please wait a moment`);
-    //     setTimeout(() => {
-    //         Toast.success('Success. Product already add to my wishlist', 2000)
-    //         Toast.hide();
-    //             }, 3000);
-    //         }).catch((err) => { console.log(err) })
-    // }
-
 
     // RENDER CATEGORY
     // ===============
@@ -95,38 +75,42 @@ class Home extends Component {
     // RENDER SPECIAL PRODUK
     // =====================
     renderCarousel = () => {
-        return this.state.specialProduk.map((val, index) => {
-            const discount = this.state.specialProduk[index].diskon
-            return (
-                <Link key={index} to={'/detailproduk/' + val.id}>
-                    <div key={index}>
-                        <img style={{ cursor: 'pointer' }} src={`${APIURLimagetoko}` + val.image} alt="image" />
+        console.log('SOECIAL', this.state.specialProduk)
+        if (this.state.specialProduk) {
 
-                        <center>
-                            <button className="btn mx-auto p-0"
-                                style={{
-                                    zIndex: 1,
-                                    cursor: 'text',
-                                    position: "absolute",
-                                    top: -6,
-                                    right: 0,
-                                    borderRadius: "0px 0px 0px 60px",
-                                    fontSize: "20px",
-                                    fontWeight: "bolder",
-                                    lineHeight: '18px',
-                                    height: "45px",
-                                    width: "15%",
-                                    color: "black",
-                                    backgroundColor: "#00FF00"
-                                }}
-                            >{discount}%
-                            </button>
-                        </center>
+            return this.state.specialProduk.map((val, index) => {
+                const discount = this.state.specialProduk[index].diskon
+                return (
+                    <Link key={index} to={'/detailproduk/' + val.id}>
+                        <div key={index}>
+                            <img style={{ cursor: 'pointer' }} src={`${APIURLimagetoko}` + val.image} alt="image" />
 
-                    </div>
-                </Link>
-            )
-        })
+                            <center>
+                                <button className="btn mx-auto p-0"
+                                    style={{
+                                        zIndex: 1,
+                                        cursor: 'text',
+                                        position: "absolute",
+                                        top: -6,
+                                        right: 0,
+                                        borderRadius: "0px 0px 0px 60px",
+                                        fontSize: "20px",
+                                        fontWeight: "bolder",
+                                        lineHeight: '18px',
+                                        height: "45px",
+                                        width: "15%",
+                                        color: "black",
+                                        backgroundColor: "#00FF00"
+                                    }}
+                                >{discount}%
+                                </button>
+                            </center>
+
+                        </div>
+                    </Link>
+                )
+            })
+        }
     }
 
     // RENDER GALLERY 
@@ -171,6 +155,7 @@ class Home extends Component {
         }
 
         return datapro.map((val, index) => {
+            let { roleid } = this.props
             let discount = datapro[index].diskon
             let hargadiskon = 'Rp. ' + Numeral(datapro[index].hargadisc).format('0,0.00')
             let harganormal = 'Rp. ' + Numeral(datapro[index].harganormal).format('0,0.00')
@@ -178,60 +163,73 @@ class Home extends Component {
             return (
                 <Fade key={index} bottom cascade>
                     <div key={index} className="grid">
-                        <Link to={'/detailproduk/' + val.id}>
-                            <figure className="effect-winston">
-                                <img src={`${APIURLimagetoko}` + val.image} alt="image" />
-                                <button className="btn mx-auto p-0"
-                                    style={
-                                        {
-                                            zIndex: 1,
-                                            cursor: 'text',
-                                            position: "absolute",
-                                            top: -6,
-                                            right: 0,
-                                            borderRadius: "0px 0px 0px 30px",
-                                            fontSize: "18px",
-                                            fontWeight: "bolder",
-                                            lineHeight: '17px',
-                                            height: "14%",
-                                            width: "23%",
-                                            color: "black",
-                                            backgroundColor: "#ADFF2F"
-                                        }
-                                    }>{discount}%
-                                    </button>
-                                <figcaption>
-                                    <h5>{val.namakategori}</h5>
-                                    <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
-                                    <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
-                                        <span style={{ fontWeight: 'bolder', fontSize: '16px' }}>{hargadiskon}</span></h6>
-                                    <h6>stock {sisa}</h6>
-                                    <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
+                        {
+                            roleid > 1 ?
+                                <figure className="effect-winston">
+                                    <img src={`${APIURLimagetoko}` + val.image} alt="image" />
+                                    <button className="btn mx-auto p-0"
+                                        style={
+                                            {
+                                                zIndex: 1,
+                                                cursor: 'text',
+                                                position: "absolute",
+                                                top: -6,
+                                                right: 0,
+                                                borderRadius: "0px 0px 0px 30px",
+                                                fontSize: "18px",
+                                                fontWeight: "bolder",
+                                                lineHeight: '17px',
+                                                height: "14%",
+                                                width: "23%",
+                                                color: "black",
+                                                backgroundColor: "#ADFF2F"
+                                            }
+                                        }>{discount}%
+                                </button>
+                                    <figcaption>
+                                        <h5>{val.namakategori}</h5>
+                                        <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
+                                        <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
+                                            <span style={{ fontWeight: 'bolder', fontSize: '16px' }}>{hargadiskon}</span></h6>
+                                        <h6>stock {sisa}</h6>
+                                        <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
+                                    </figcaption>
 
-                                    {/* {
-                                        this.props.roleid === 2 || this.props.roleid === 3 ? null :
-                                            <p>
-                                                <Link to={'/detailproduk/' + val.id}>
-                                                    <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
-                                                        <i className="fa fa-shopping-cart" ></i>
-                                                    </Tooltip>
-                                                </Link>
+                                </figure> :
+                                <Link to={'/detailproduk/' + val.id}>
+                                    <figure className="effect-winston" style={{ cursor: 'none' }}>
+                                        <img src={`${APIURLimagetoko}` + val.image} alt="image" style={{ cursor: 'none' }} />
+                                        <button className="btn mx-auto p-0"
+                                            style={
                                                 {
-                                                    this.props.roleid === 1 ?
-                                                        <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
-                                                            <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
-                                                        </Tooltip> :
-                                                        <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
-                                                            <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
-                                                        </Tooltip>
+                                                    zIndex: 1,
+                                                    cursor: 'text',
+                                                    position: "absolute",
+                                                    top: -6,
+                                                    right: 0,
+                                                    borderRadius: "0px 0px 0px 30px",
+                                                    fontSize: "18px",
+                                                    fontWeight: "bolder",
+                                                    lineHeight: '17px',
+                                                    height: "14%",
+                                                    width: "23%",
+                                                    color: "black",
+                                                    backgroundColor: "#ADFF2F"
                                                 }
-                                            </p>
-                                    } */}
+                                            }>{discount}%
+                                    </button>
+                                        <figcaption style={{ cursor: 'none' }}>
+                                            <h5>{val.namakategori}</h5>
+                                            <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
+                                            <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
+                                                <span style={{ fontWeight: 'bolder', fontSize: '16px' }}>{hargadiskon}</span></h6>
+                                            <h6>stock {sisa}</h6>
+                                            <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
+                                        </figcaption>
 
-                                </figcaption>
-
-                            </figure>
-                        </Link>
+                                    </figure>
+                                </Link>
+                        }
                     </div>
                 </Fade>
             )
@@ -284,7 +282,6 @@ class Home extends Component {
                             <div onClick={() => this.setState({ option: 'discount', opt: true, range: false, rangeprice: { max: 0, min: 0 } })} className='filteroption'>Discount</div>
                         </div>
                         <div className='d-flex justify-content-between px-2 py-1'>
-                            {/* <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, option: 'Sort By', opt: false, range: false, rangeprice: { max: 0, min: 0 } })} size='sm' className="btn btn-grey py-1">reset</Button> */}
                             <Button onClick={() => this.setState({ popoverOpenOption: !popoverOpenOption, rangeprice: { max: 0, min: 0 } })} size='sm' className="btn btn-grey py-1">ok</Button>
                         </div>
                     </PopoverBody>
@@ -395,3 +392,24 @@ const MapStateToProps = (state) => {
 }
 
 export default connect(MapStateToProps, { Open_Login, Open_Register, PembeliRegister })(Home);
+
+
+{/* {
+                                        this.props.roleid === 2 || this.props.roleid === 3 ? null :
+                                            <p>
+                                                <Link to={'/detailproduk/' + val.id}>
+                                                    <Tooltip TransitionComponent={Zoom} title="detail or buy" arrow placement="top">
+                                                        <i className="fa fa-shopping-cart" ></i>
+                                                    </Tooltip>
+                                                </Link>
+                                                {
+                                                    this.props.roleid === 1 ?
+                                                        <Tooltip TransitionComponent={Zoom} title="add wishlist" arrow placement="top">
+                                                            <a className="wishlist" onClick={() => this.addToWishList(index)} ><i className="fa fa-fw fa-heart"></i></a>
+                                                        </Tooltip> :
+                                                        <Tooltip TransitionComponent={Zoom} title="You must login first" arrow placement="top">
+                                                            <a className="wishlist" ><i className="fa fa-fw fa-heart"></i></a>
+                                                        </Tooltip>
+                                                }
+                                            </p>
+                                    } */}
