@@ -32,6 +32,8 @@ function Manageproduk() {
 
     const [editImage, seteditImage] = useState(false)
 
+    const [addnewimage, setaddnewimage] = useState(false);
+
     const [modalImage, setmodalImage] = useState(false)
     const togglemodalImage = () => {
         setmodalImage(!modalImage)
@@ -126,16 +128,13 @@ function Manageproduk() {
         }
         console.log('DATAIMG', dataImage)
 
-        // console.log('iniiii', formdata)
         formdata.append('data', JSON.stringify(addnewProduk))
         Axios.post(`${APIURL}produk/addprodukresto`, formdata, Headers)
             .then(res => {
-                // console.log('iniii', res.data)
+                Toast.success('success..', 1000)
                 setdataProduk(res.data)
                 setModalAdd(!modalAdd)
-            }).catch(err => {
-                console.log(err);
-            })
+            }).catch(err => console.log(err))
         setdataImage([])
     }
 
@@ -169,7 +168,10 @@ function Manageproduk() {
             .then(() => {
                 setmodalDelete(!modalDelete)
                 Axios.get(`${APIURL}produk/dataprodresto/${idtoko}`)
-                    .then(res1 => { setdataProduk(res1.data) })
+                    .then(res1 => {
+                        Toast.success('deleted..', 1500)
+                        setdataProduk(res1.data)
+                    })
                     .catch(err => { console.log(err) })
             }).catch(err => { console.log(err) })
     }
@@ -242,6 +244,7 @@ function Manageproduk() {
             dataImageResto.map((val, i) => {
                 return (
                     <div key={i} className="col-2 m-2">
+
                         <img src={`${APIURLimagetoko + val.image}`} width="130px" height="86.6" alt="" />
                         <div>
                             <img onClick={() => editImageClick(i)} className="ml-5 mt-3 edit" style={{ cursor: "pointer" }} width="18px" src={require('../../../pages/images/icons/content.svg')}></img>
@@ -273,25 +276,6 @@ function Manageproduk() {
                                     dataImageResto.length == 0 ? null
                                         :
                                         null
-                                // <img
-                                //     /* --- delete image ----*/
-                                //     onClick={() => {
-                                //         Axios.get(`${APIURL}produk/deleteimgprodresto/${dataImageResto[i].id}`, { idtoko })
-                                //             .then(() => {
-                                //                 Toast.loading(`Delete image. Please wait a moment`);
-                                //                 setTimeout(() => {
-                                //                     Axios.get(`${APIURL}produk/imgprodresto/${idProduk}`)
-                                //                         .then(res1 => { setdataImageResto(res1.data) })
-                                //                         .catch(err => { console.log(err) })
-                                //                     Toast.success('deleted..', 1500)
-                                //                     Toast.hide();
-                                //                 }, 2000);
-                                //             })
-                                //             .catch(err => { console.log(err) })
-                                //     }}
-                                //     className="mt-3 ml-2 delete" style={{ cursor: "pointer" }} width="20px"
-                                //     src={require('../../../pages/images/icons/bin.svg')}>
-                                // </img>
                             }
 
                         </div>
@@ -305,6 +289,7 @@ function Manageproduk() {
     // ==============
     const editImageClick = (i) => {
         seteditImage(true)
+        setaddnewimage(false)
         setimageEdit(dataImageResto[i])
     }
 
@@ -365,6 +350,12 @@ function Manageproduk() {
     const onSearchChange = (e) => {
         console.log(e.target.value)
         setsearchfield(e.target.value)
+    }
+
+    // ADD NEW IMAGE PRODUCT 
+    // =====================
+    const addNewimage = () => {
+
     }
 
 
@@ -463,6 +454,20 @@ function Manageproduk() {
             {/* -------- modal product images -------- */}
             <Modaltemplate title='Product Image' toggle={togglemodalImage} modal={modalImage} style={{ width: "auto" }} >
                 <div className="p-3">
+                    <div className="d-flex">
+                        <Button size='sm' className="btn btn-green py-1" style={{ marginLeft: '4%' }} onClick={() => {
+                            setaddnewimage(true)
+                            seteditImage(false)
+                        }} >New image</Button>
+                        {
+                            addnewimage ?
+                                <div style={{ marginLeft: '4%', width: '60%', display: 'flex' }}>
+                                    <CustomInput type='file' label='Select Image..' className='form-control' />
+                                    <img className="pt-1 pl-2 cancel" onClick={() => setaddnewimage(false)} style={{ cursor: "pointer" }} src={require('../../../pages/images/icons/close.svg')} alt="cancel" height="28px" />
+                                    <img className="pt-1 pl-2" style={{ cursor: "pointer" }} src={require('../../../pages/images/icons/upload.svg')} alt="upload" height="28px" />
+                                </div> : null
+                        }
+                    </div>
                     <div className="row pl-4" style={{ width: "830px" }}>
                         {renderProdukImage()}
                     </div>
@@ -492,7 +497,7 @@ function Manageproduk() {
                         dataProduk.length > 0 ?
                             (
                                 <Table className="tabelprod" striped >
-                                    <thead>
+                                    <thead >
                                         <tr >
                                             <th>No</th>
                                             <th>Name</th>

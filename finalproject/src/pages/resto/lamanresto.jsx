@@ -35,10 +35,10 @@ class Lamanmitra extends React.Component {
                                 <i className="fa fa-money" ></i>
                                 <p>Transaction</p>
                             </Tab>
-                            <Tab tabFor="vertical-tab-four">
+                            {/* <Tab tabFor="vertical-tab-four">
                                 <i className="fa fa-money" ></i>
                                 <p>Statistic</p>
-                            </Tab>
+                            </Tab> */}
                         </TabList>
                         <TabPanel style={{ width: "100%" }} tabId="vertical-tab-one">
                             <Profile />

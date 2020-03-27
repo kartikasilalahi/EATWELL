@@ -1485,6 +1485,8 @@ figure.effect-winston:hover p a:first-child i {
 .tabel-user tbody tr th {
 	font-size: 16px;
 	font-weight: bold;
+	padding: 10px 0;
+	text-align: center;
 }
 
 .tabel-product-image thead tr td,
