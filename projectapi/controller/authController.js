@@ -45,7 +45,7 @@ module.exports = {
                     }
                 }
                 else {
-                    console.log('incorect')
+                    // console.log('incorect')
                     res.status(200).send({ status: "LOGIN_ERROR", message: "username or password incorrect" })
                 }
             })

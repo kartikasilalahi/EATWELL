@@ -74,9 +74,9 @@ export const PembeliRegister = ({ username, email, phone, password, confpassword
                 .then((res) => {
                     console.log('ini akun regist', res.data)
                     if (res.data.status === REGISTER_PEMBELI_ERROR) {
-                        dispatch({ type: REGISTER_PEMBELI_ERROR, payload: res.data.message })
+                        return dispatch({ type: REGISTER_PEMBELI_ERROR, payload: res.data.message })
                     } else {
-                        dispatch({ type: REGISTER_PEMBELI_SUCCESS })
+                        return dispatch({ type: REGISTER_PEMBELI_SUCCESS, payload: 'Registered. Please check your email to verification :)' })
                         // console.log('success regist pembeli')
                     }
                 }).catch((err) => {
@@ -155,6 +155,14 @@ export const Login_Success = act => {
         payload: act
     }
 }
+
+export const Regist_Success = act => {
+    return {
+        type: 'LOGIN_SUCCESS',
+        payload: act
+    }
+}
+
 
 /* === logout === */
 export const Logout_Success = () => {

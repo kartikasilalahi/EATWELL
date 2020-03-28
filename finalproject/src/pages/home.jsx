@@ -15,7 +15,6 @@ import Numeral from 'numeral'
 import { Open_Login, Open_Register, PembeliRegister } from '../redux/action'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
-import Toast from 'light-toast'
 import { MDBIcon } from "mdbreact";
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css'
@@ -75,7 +74,6 @@ class Home extends Component {
     // RENDER SPECIAL PRODUK
     // =====================
     renderCarousel = () => {
-        console.log('SOECIAL', this.state.specialProduk)
         if (this.state.specialProduk) {
 
             return this.state.specialProduk.map((val, index) => {
@@ -186,7 +184,7 @@ class Home extends Component {
                                             }
                                         }>{discount}%
                                 </button>
-                                    <figcaption>
+                                    <figcaption style={{ cursor: 'text' }}>
                                         <h5>{val.namakategori}</h5>
                                         <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
                                         <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>
@@ -194,11 +192,10 @@ class Home extends Component {
                                         <h6>stock {sisa}</h6>
                                         <h6>valid until {moment(val.tanggalakhir).format('DD-MM-YYYY')}</h6>
                                     </figcaption>
-
                                 </figure> :
                                 <Link to={'/detailproduk/' + val.id}>
-                                    <figure className="effect-winston" style={{ cursor: 'none' }}>
-                                        <img src={`${APIURLimagetoko}` + val.image} alt="image" style={{ cursor: 'none' }} />
+                                    <figure className="effect-winston" >
+                                        <img src={`${APIURLimagetoko}` + val.image} alt="image" />
                                         <button className="btn mx-auto p-0"
                                             style={
                                                 {
@@ -218,7 +215,7 @@ class Home extends Component {
                                                 }
                                             }>{discount}%
                                     </button>
-                                        <figcaption style={{ cursor: 'none' }}>
+                                        <figcaption>
                                             <h5>{val.namakategori}</h5>
                                             <h6><MdRestaurant /> {val.namaproduk}- {val.namatoko}</h6>
                                             <h6><span style={{ textDecoration: 'line-through', marginRight: '5px' }}>{harganormal}</span>

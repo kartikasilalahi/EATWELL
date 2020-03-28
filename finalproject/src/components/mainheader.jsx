@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'mdbreact/dist/css/mdb.css'
 import { Modal, ModalBody } from 'reactstrap'
 import { Carousel } from 'react-responsive-carousel'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { MDBBtn, MDBInput } from 'mdbreact'
 import Swal from "sweetalert2";
 import {
@@ -14,12 +14,13 @@ import {
     ERROR_LOGIN,
     ERROR_REGISTER_PEMBELI,
     LoadingRegist,
-    Login_Success
+    Login_Success,
+    Regist_Success
 } from '../redux/action'
 import { connect } from 'react-redux'
 import Loadingspinner from 'react-spinners/PulseLoader'
 import Toast from 'light-toast'
-import Lamanresto from '../pages/resto/lamanresto'
+// import Lamanresto from '../pages/resto/lamanresto'
 
 
 class Header extends Component {
@@ -132,6 +133,7 @@ class Header extends Component {
             confpassword
         });
         this.props.ERROR_LOGIN('')
+        this.props.Regist_Success('')
 
 
     }
@@ -168,8 +170,8 @@ class Header extends Component {
 
     render() {
         // console.log(this.props.loginnotif)
-        if (this.props.register) {
-            Toast.success('Registered. Please check your email to verification :)', 2000)
+        if (this.props.resgistsucces.length > 0) {
+            Toast.success(`${this.props.resgistsucces}`, 2000)
         }
         return (
             <div>
@@ -366,7 +368,8 @@ const MapStateToProps = (state) => {
         username: state.authReducer.username,
         loadingregist: state.authReducer.loadingregist,
         roleid: state.authReducer.roleid,
-        register: state.authReducer.register
+        register: state.authReducer.register,
+        resgistsucces: state.authReducer.resgistsucces
     }
 }
 
@@ -380,6 +383,7 @@ export default connect(MapStateToProps,
         ERROR_LOGIN,
         ERROR_REGISTER_PEMBELI,
         LoadingRegist,
-        Login_Success
+        Login_Success,
+        Regist_Success
     })
     (Header);

@@ -13,16 +13,18 @@ module.exports = {
     // BUY PRODUCT
     // ===========
     buyProduct: (req, res) => {
-        let sql = `INSERT INTO transaction SET ?`
+
         let { iduser, idtoko, idproduk, qty, totalharga, email } = req.body
         let datatrans = {
             iduser, idtoko, idproduk, qty, totalharga
         }
         datatrans.status = 'WAITING PAYMENT'
-        datatrans.tanggalpesan = moment().format("YYYY-MM-DD HH:mm:ss")
-        datatrans.tanggalexp = moment().add(1, 'hours').format("YYYY-MM-DD HH:mm:ss")
+        datatrans.tanggalpesan = moment().format("YYYY-MM-DD HH:mm:ss") // =>> INI UTK NGAMBIL TGL HARI INI
+        datatrans.tanggalexp = moment().add(1, 'hours').format("YYYY-MM-DD HH:mm:ss") // =>> INI UTK NGAMBIL TGL 1 JAM DARI TANGGAL PESAN TD
         let kodetransaksi = Kodetransaksi()
         datatrans.kodetransaksi = kodetransaksi
+
+        let sql = `INSERT INTO transaction SET ?`
 
         mysql.query(sql, datatrans, (err, result) => {
             if (err) return res.status(500).send(err)
@@ -230,6 +232,7 @@ module.exports = {
                     totalharga: data.totalharga,
                     idtransaction: data.idtransaction
                 }
+                console.log(data)
                 confirmdata.image = imagePath
                 confirmdata.tanggalbayar = moment().format("YYYY-MM-DD HH:mm:ss")
                 let expvoucher = moment().add(1, 'days').format("YYYY-MM-DD HH:mm:ss")
@@ -237,11 +240,6 @@ module.exports = {
 
                 confirmdata.status = 'FINISH'
                 let idtransaction = parseInt(confirmdata.idtransaction)
-
-                console.log('ini confirmdata', confirmdata)
-                console.log('qty', data.qty);
-
-                console.log('terjual total', data.terjual)
 
                 /* --- insert into user payment --- */
                 var sql = `INSERT INTO userpayment SET ? `;
@@ -280,6 +278,34 @@ module.exports = {
                                     LEFT JOIN images i ON tr.idproduk = i.idproduk WHERE tr.status = 'WAITING PAYMENT'  AND i.cover = 1 AND tr.iduser = ${ data.iduser} ORDER BY tr.idtransaction DESC`
                                 mysql.query(sql, (err3, result3) => {
                                     if (err3) return res.status(500).send(err3)
+
+                                    // ---------------- EMAIL -----------------------
+                                    // let totalHarga = 'Rp.' + Numeral(data.totalharga).format('0,0.00')
+                                    // // let hargaNormal = 'Rp. ' + Numeral(result3[0].harganormal).format('0,0.00')
+                                    // let mailoptions = {
+                                    //     from: 'eatwell <tikasilalahi.test@gmail.com>',
+                                    //     to: email,
+                                    //     subject: `EATWELL - Transaction Code ${idtransaksi}`,
+                                    //     html: `<h3>Eatwell - Your Voucher Code</h3> 
+                                    //                 <p style="color:grey;font-size:18px;">
+                                    //                     Terima Kasih telah melakukan pemesanan di <span style="color:green;">Eatwell</span><br/>
+
+                                    //                 </p>
+                                    //                 <div style="font-size:14px;">
+                                    //                     <p> Kode Voucher <span style="font-size:18px;">${kodevoucher}</span> </p>
+                                    //                     <p>Batas waktu penggunaan Voucher ${expvoucher}</p>
+                                    //                     <p>Total Bayar ${totalHarga} </p>
+
+                                    //                 </div>`
+                                    // }
+
+                                    // transporter.sendMail(mailoptions, (err1, result1) => {
+                                    //     if (err1) return res.status(500).send({ message: err1 })
+                                    //     return res.status(200).send({ message: 'berhasil kirim', result1 })
+                                    // })
+                                    // ---------------- EMAIL -----------------------
+
+
                                     return res.status(200).send(result3)
                                 })
                             })
