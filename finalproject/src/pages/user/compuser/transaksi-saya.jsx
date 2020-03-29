@@ -367,7 +367,11 @@ function TransaksiUser() {
                                                     idtransaction,
                                                     email,
                                                     qty,
-                                                    terjual: qty + terjual
+                                                    terjual: qty + terjual,
+                                                    namaproduk,
+                                                    namatoko,
+                                                    tanggalpesan,
+                                                    kodetransaksi
                                                 }
                                                 console.log('qty terjual', terjual)
                                                 var Headers = {

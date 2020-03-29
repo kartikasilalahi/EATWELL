@@ -267,6 +267,7 @@ module.exports = {
                                         tk.namatoko,
                                         tk.alamat,
                                         u.phone,
+                                        u.email,
                                         p.namaproduk,
                                         p.harganormal,
                                         p.diskon,
@@ -278,35 +279,48 @@ module.exports = {
                                     LEFT JOIN images i ON tr.idproduk = i.idproduk WHERE tr.status = 'WAITING PAYMENT'  AND i.cover = 1 AND tr.iduser = ${ data.iduser} ORDER BY tr.idtransaction DESC`
                                 mysql.query(sql, (err3, result3) => {
                                     if (err3) return res.status(500).send(err3)
+                                    // console.log(result3)
 
-                                    // ---------------- EMAIL -----------------------
-                                    // let totalHarga = 'Rp.' + Numeral(data.totalharga).format('0,0.00')
-                                    // // let hargaNormal = 'Rp. ' + Numeral(result3[0].harganormal).format('0,0.00')
-                                    // let mailoptions = {
-                                    //     from: 'eatwell <tikasilalahi.test@gmail.com>',
-                                    //     to: email,
-                                    //     subject: `EATWELL - Transaction Code ${idtransaksi}`,
-                                    //     html: `<h3>Eatwell - Your Voucher Code</h3> 
-                                    //                 <p style="color:grey;font-size:18px;">
-                                    //                     Terima Kasih telah melakukan pemesanan di <span style="color:green;">Eatwell</span><br/>
-
-                                    //                 </p>
-                                    //                 <div style="font-size:14px;">
-                                    //                     <p> Kode Voucher <span style="font-size:18px;">${kodevoucher}</span> </p>
-                                    //                     <p>Batas waktu penggunaan Voucher ${expvoucher}</p>
-                                    //                     <p>Total Bayar ${totalHarga} </p>
-
-                                    //                 </div>`
-                                    // }
-
-                                    // transporter.sendMail(mailoptions, (err1, result1) => {
-                                    //     if (err1) return res.status(500).send({ message: err1 })
-                                    //     return res.status(200).send({ message: 'berhasil kirim', result1 })
-                                    // })
-                                    // ---------------- EMAIL -----------------------
+                                    mysql.query(`SELECT username,email FROM user where id=${data.iduser}`, (err4, result4) => {
+                                        if (err4) return res.status(500).send(err4)
+                                        console.log(result4[0])
 
 
-                                    return res.status(200).send(result3)
+
+                                        // ---------------- EMAIL -----------------------
+                                        let totalHarga = 'Rp.' + Numeral(data.totalharga).format('0,0.00')
+                                        // let hargaNormal = 'Rp. ' + Numeral(result3[0].harganormal).format('0,0.00')
+                                        let mailoptions = {
+                                            from: 'eatwell <tikasilalahi.test@gmail.com>',
+                                            to: result4[0].email,
+                                            subject: `EATWELL - Voucher for transaction number ${data.kodetransaksi}`,
+                                            html: `<h3>Hello, ${result4[0].username} - It's Time to use Your Voucher Code</h3> 
+                                                        <p style="color:grey;font-size:18px;">
+                                                            Terima Kasih telah melakukan pemesanan di <span style="color:green;">Eatwell</span><br/>
+
+                                                        </p>
+                                                        <div style="font-size:14px;">
+                                                            <p> Kode Voucher Anda<span style="font-size:18px;"> ${kodevoucher}</span> </p>
+                                                            <p>Produk yang anda pesan ${data.namaproduk} - ${data.namatoko}</p>
+                                                            <p>dengan Total Harga ${totalHarga} </p>
+                                                            <p>Masa berlaku Voucher hingga ${expvoucher}</p>
+                                                            <p>Simpan dan Bawa Kode ini saat anda ingin menggunakannya. Ditunggu pesanan berikutnya yaa:)</p>
+
+                                                        </div>`
+                                        }
+
+                                        transporter.sendMail(mailoptions, (err1, result1) => {
+                                            if (err1) return res.status(500).send({ message: err1 })
+                                            console.log('berhasil');
+
+                                            return res.status(200).send({ message: 'berhasil kirim', result1 })
+                                        })
+                                        return res.status(200).send(result3)
+                                        // ---------------- EMAIL -----------------------
+                                    })
+
+
+
                                 })
                             })
                         })

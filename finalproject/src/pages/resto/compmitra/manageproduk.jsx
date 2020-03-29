@@ -454,7 +454,7 @@ function Manageproduk() {
             {/* -------- modal product images -------- */}
             <Modaltemplate title='Product Image' toggle={togglemodalImage} modal={modalImage} style={{ width: "auto" }} >
                 <div className="p-3">
-                    <div className="d-flex">
+                    {/* <div className="d-flex">
                         <Button size='sm' className="btn btn-green py-1" style={{ marginLeft: '4%' }} onClick={() => {
                             setaddnewimage(true)
                             seteditImage(false)
@@ -467,7 +467,7 @@ function Manageproduk() {
                                     <img className="pt-1 pl-2" style={{ cursor: "pointer" }} src={require('../../../pages/images/icons/upload.svg')} alt="upload" height="28px" />
                                 </div> : null
                         }
-                    </div>
+                    </div> */}
                     <div className="row pl-4" style={{ width: "830px" }}>
                         {renderProdukImage()}
                     </div>
