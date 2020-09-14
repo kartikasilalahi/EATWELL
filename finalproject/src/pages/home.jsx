@@ -43,14 +43,18 @@ class Home extends Component {
     }
 
     // COMPONENTDIDMOUNT
+    // =================
     componentDidMount() {
         AOS.init({ duration: 1000 })
         Axios.get(`${APIURL}produk/dataprod`)
-            .then((res) => this.setState({
-                dataProduk: res.data.dataproduk,
-                max: res.data.max[0].maxprice,
-                specialProduk: res.data.specialprod
-            }))
+            .then((res) => {
+                this.setState({
+                    dataProduk: res.data.dataproduk,
+                    max: res.data.max,
+                    specialProduk: res.data.specialprod
+                })
+                console.log(`${APIURL}produk/dataprod`)
+            })
             .catch((err) => console.log(err))
 
         Axios.get(`${APIURL}produk/kategoriproduk`)
@@ -235,6 +239,7 @@ class Home extends Component {
 
 
     render() {
+        console.log('kategori', this.state.dataProduk)
         let { searchfield, filterby, popoverOpenPrice, popoverOpenOption, max, rangeprice, option, opt } = this.state
         return (
             <div className="homepage">
@@ -246,7 +251,7 @@ class Home extends Component {
                         <div className="mt-4 p-4">
                             <InputRange
                                 draggableTrack
-                                step={5000}
+                                step={1000}
                                 maxValue={max}
                                 minValue={0}
                                 onChange={value => this.setState({ rangeprice: value })}

@@ -25,9 +25,10 @@ module.exports = {
                 LEFT JOIN toko t ON p.idtoko = t.usertokoid
                 LEFT JOIN images i ON p.id=i.idproduk WHERE i.cover=1 AND tanggalakhir > '${now}' AND tanggalmulai <= '${now}' ORDER BY p.id DESC`
         mysql.query(sql, (err, result) => {
+            console.log(sql)
             if (err) return res.status(500).send(err);
 
-            mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)*2) as maxprice FROM produk`, (err1, res1) => {
+            mysql.query(`SELECT max(harganormal-(harganormal*diskon/100)) as maxprice FROM produk`, (err1, res1) => {
                 if (err1) return res.status(500).send(err1);
                 sql = `SELECT
                         p1.id, 
@@ -53,7 +54,8 @@ module.exports = {
                     limit 5`
                 mysql.query(sql, (err2, res2) => {
                     if (err2) return res.status(500).send(err2);
-                    return res.status(200).send({ dataproduk: result, max: res1, specialprod: res2 });
+                    console.log(res1[0].maxprice)
+                    return res.status(200).send({ dataproduk: result, max: res1[0].maxprice, specialprod: res2 });
                 })
             })
 
@@ -121,6 +123,7 @@ module.exports = {
                 if (err2) return res.status(500).send(err2)
                 let lastcategory = result2[0]
                 category.push(lastcategory)
+                console.log(category)
                 return res.status(200).send(category)
             })
         })
@@ -169,7 +172,8 @@ module.exports = {
                 /* ------- foto baru telah terupload ------- */
                 // console.log('masuk upload')
                 const { image } = req.files;
-                // console.log('ini img', image)
+                console.log('ini req.files', req.files)
+                console.log('ini img', image)
 
                 const data = JSON.parse(req.body.data)
                 // console.log('id toko', data)

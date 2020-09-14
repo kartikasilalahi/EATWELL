@@ -4,7 +4,7 @@ const BodyParser = require('body-parser')
 const cors = require('cors')   // untuk mengubungkan backend ke front end
 const fs = require('fs')    // file system
 
-const port = 9002
+const port = 9008
 
 app.use(cors())
 app.use(BodyParser.urlencoded({ extended: false }))

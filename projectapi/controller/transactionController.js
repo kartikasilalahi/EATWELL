@@ -20,7 +20,7 @@ module.exports = {
         }
         datatrans.status = 'WAITING PAYMENT'
         datatrans.tanggalpesan = moment().format("YYYY-MM-DD HH:mm:ss") // =>> INI UTK NGAMBIL TGL HARI INI
-        datatrans.tanggalexp = moment().add(1, 'hours').format("YYYY-MM-DD HH:mm:ss") // =>> INI UTK NGAMBIL TGL 1 JAM DARI TANGGAL PESAN TD
+        datatrans.tanggalexp = moment().add(1, 'day').format("YYYY-MM-DD HH:mm:ss") // =>> INI UTK NGAMBIL TGL 1 JAM DARI TANGGAL PESAN TD
         let kodetransaksi = Kodetransaksi()
         datatrans.kodetransaksi = kodetransaksi
 

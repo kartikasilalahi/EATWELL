@@ -99,7 +99,6 @@ function Manageproduk() {
     // FUNCTION ADD PRODUK
     // ===================
     const addNewProduk = () => {
-        // console.log('ini img yg di add', dataImage)
         let id = parseInt(localStorage.getItem('id'))
         var formdata = new FormData()
         const { namaproduk, harganormal, diskon, kuota, tanggalmulai, tanggalakhir, idkategoriproduk, maxbeli } = addProduk
@@ -115,8 +114,6 @@ function Manageproduk() {
             terjual: 0,
             maxbeli: parseInt(maxbeli.current.value)
         }
-
-        console.log(maxbeli.current.value)
         var Headers = {
             headers:
             {
